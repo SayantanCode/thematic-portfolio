@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+@theme {
+  /* This maps your CSS variables to Tailwind utility classes */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-accent-glow: var(--accent-glow);
+  --color-text-primary: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-glass-border: var(--glass-border);
+
+  --font-header: "Montserrat", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  :root {
+    --bg: #020c1b;
+    --surface: #0a192f;
+    --accent: #d4af37;
+    --accent-glow: rgba(212, 175, 55, 0.15);
+    --text: #e6f1ff;
+    --text-muted: #8892b0;
+    --glass-border: rgba(212, 175, 55, 0.1);
+    --glass-bg: rgba(10, 25, 47, 0.7);
+    --is-light: 0;
+    --gold-dark: #b8860b;
+  }
+
+  [data-theme="cyber"] {
+    --bg: #050505;
+    --surface: #121212;
+    --accent: #00f3ff;
+    --accent-glow: rgba(0, 243, 255, 0.15);
+    --text: #ffffff;
+    --text-muted: #a0a0a0;
+    --glass-border: rgba(0, 243, 255, 0.2);
+    --glass-bg: rgba(18, 18, 18, 0.7);
+    --is-light: 0;
+  }
+
+  [data-theme="monochrome"] {
+    --bg: #ffffff;
+    --surface: #fafafa; /* Slightly off-white for depth */
+    --accent: #000000;
+    --accent-glow: rgba(0, 0, 0, 0.08);
+    --text: #000000;
+    --text-muted: #525252; /* Darker for readability */
+    --glass-border: rgba(0, 0, 0, 0.15);
+    --glass-bg: rgba(240, 240, 240, 0.8);
+    --is-light: 1;
+    --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="nordic"] {
+    --bg: #eceff4;      /* Polar Night/Snow Storm mix */
+    --surface: #d8dee9; 
+    --accent: #5e81ac;  /* Frost Blue */
+    --accent-glow: rgba(94, 129, 172, 0.2);
+    --text: #2e3440;    /* Deep Nord Blue-Black */
+    --text-muted: #4c566a;
+    --glass-border: rgba(76, 86, 106, 0.1);
+    --glass-bg: rgba(236, 239, 244, 0.8);
+    --is-light: 1;
+    --card-shadow: 0 10px 30px -15px rgba(46, 52, 64, 0.2);
+  }
+
+  [data-theme="emerald"] {
+    --bg: #06120e;
+    --surface: #0c1f1a;
+    --accent: #10b981;
+    --accent-glow: rgba(16, 185, 129, 0.15);
+    --text: #ecfdf5;
+    --text-muted: #6ee7b7;
+    --glass-border: rgba(16, 185, 129, 0.2);
+    --glass-bg: rgba(12, 31, 26, 0.7);
+    --is-light: 0;
+  }
+
+  * {
+    cursor: none !important;
+    @apply transition-colors duration-300;
+  }
+
+  body {
+    @apply bg-bg text-text-primary transition-colors duration-500;
+    background-color: var(--bg) !important;
+    color: var(--text);
+    font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--surface);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+  }
+}
+
+@layer components {
+  .glass-card {
+    /* Using Tailwind v4 variables in standard CSS */
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-bottom: 2px solid var(--accent);
+    box-shadow: var(--card-shadow, none);
+    color: var(--text);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+  }
+}
