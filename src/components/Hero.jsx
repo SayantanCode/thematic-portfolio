@@ -122,7 +122,8 @@ export const Hero = () => {
             </motion.button>
 
             <motion.a
-              href="#"
+              href="https://github.com/SayantanCode/thematic-portfolio"
+              target="_blank"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="

@@ -3,26 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Palette } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
-const themes = [
-  { id: "default", name: "Midnight Gold", color: "#d4af37" },
-  { id: "cyber", name: "Cyber Cyan", color: "#00f3ff" },
-  { id: "monochrome", name: "Monochrome", color: "#111111" },
-  { id: "nordic", name: "Nordic Frost", color: "#5e81ac" },
-  { id: "emerald", name: "Emerald Night", color: "#10b981" },
-];
-
 export const ThemeSwitcher = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, availableThemes } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
-  const activeThemeName =
-    theme?.type === "preset" ? theme.name : "custom";
-
-  const handleThemeChange = (themeId) => {
-    setTheme({
-      type: "preset",
-      name: themeId,
-    });
+  const handleThemeChange = (t) => {
+    setTheme(t);
     setIsOpen(false);
   };
 
@@ -49,13 +35,17 @@ export const ThemeSwitcher = () => {
               Select Environment
             </p>
 
-            {themes.map((t) => {
-              const isActive = activeThemeName === t.id;
+            {availableThemes.map((t) => {
+              const isActive =
+                theme.type === t.type &&
+                (t.type === "preset"
+                  ? theme.name === t.name
+                  : theme.id === t.id);
 
               return (
                 <button
                   key={t.id}
-                  onClick={() => handleThemeChange(t.id)}
+                  onClick={() => handleThemeChange(t)}
                   className={`flex items-center gap-3 w-full p-2 rounded-lg transition-all interactive group ${
                     isActive
                       ? "bg-accent text-bg"
@@ -68,7 +58,7 @@ export const ThemeSwitcher = () => {
                   />
 
                   <span className="text-xs font-mono font-bold tracking-tight">
-                    {t.name}
+                    {t.label}
                   </span>
 
                   {isActive && (
