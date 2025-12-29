@@ -78,6 +78,10 @@
     --is-light: 0;
   }
 
+  [data-theme="custom"] {
+    --is-light: 0
+  }
+
   * {
     cursor: none !important;
     @apply transition-colors duration-300;
