@@ -1,246 +1,118 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Github, ChevronRight, Cpu, Briefcase, ChevronUp } from "lucide-react";
+import { ChevronRight, Mail, Briefcase, ChevronUp } from "lucide-react";
+import { scrollToSection } from "../hooks/useSectionScroll.js";
+import { LowPolyName } from "./text/LowPolyName.jsx";
+import { Tooltip } from "./ui/Tooltip.jsx";
+import { Button } from "./ui/Button.jsx";
+import { SKILLS } from "../constants/Skills.jsx";
+import { useAccentColor } from "../hooks/useAccentColor.js";
+import { useMediaQuery } from "../hooks/useMediaQuery.js";
+import heroIllustration from "../assets/hero-illustration.svg";
 
 export const Hero = () => {
-  const scrollToSection = (sectionName) => {
-    const section = document.getElementById(sectionName);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  const accent = useAccentColor();
+  // Mirrors the h1's own text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl —
+  // LowPolyName needs an actual pixel size to size its canvas/SVG output.
+  const isSm = useMediaQuery("(min-width: 640px)");
+  const isMd = useMediaQuery("(min-width: 768px)");
+  const isLg = useMediaQuery("(min-width: 1024px)");
+  const nameFontSize = isLg ? 60 : isMd ? 48 : isSm ? 36 : 32;
 
   return (
     <section
-      className="
-        relative
-        min-h-[100svh]
-        flex
-        items-center
-        justify-center
-        overflow-hidden
-        px-6
-        lg:px-12
-      "
+      id="home"
+      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden px-6 lg:px-12 pt-20 lg:pt-0"
     >
-      {/* MAIN CONTENT */}
-      <div
-        className="
-          container
-          mx-auto
-          grid
-          gap-12
-          items-center
-          lg:grid-cols-2
-          text-center
-          lg:text-left
-        "
-      >
+      <div className="container mx-auto grid gap-12 items-center lg:grid-cols-2 text-center lg:text-left">
         {/* LEFT CONTENT */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="
-            relative
-            z-10
-            flex
-            flex-col
-            items-center
-            lg:items-start
-          "
+          className="relative z-10 flex flex-col items-center lg:items-start"
         >
-          {/* STATUS CHIP */}
-          <div className="mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/30 rounded-full">
-              <Briefcase size={14} className="text-accent" />
-              <span className="text-[10px] text-accent font-mono uppercase tracking-widest">
-                Open to Opportunities
-              </span>
-            </div>
-          </div>
+          <span className="text-muted font-mono text-xs uppercase tracking-widest mb-3">
+            Hello, I'm 👋
+          </span>
 
-          {/* HEADING */}
-          <h1
-            className="
-              font-header
-              font-black
-              leading-tight
-              mb-6
-              text-[2.2rem]
-              sm:text-4xl
-              md:text-5xl
-              lg:text-6xl
-            "
-          >
-            Backend-Heavy <br />
-            <span className="text-accent underline decoration-accent/30">
-              Architectural
-            </span>{" "}
-            Design.
+          <h1 className="font-header font-black leading-tight mb-4 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl flex flex-wrap items-end justify-center lg:justify-start gap-x-3">
+            <span>Sayantan</span>
+            <LowPolyName text="Chakraborty" color={accent} fontSize={nameFontSize} delay={0.2} stagger={0.045} />
           </h1>
 
-          {/* DESCRIPTION */}
-          <p
-            className="
-              max-w-lg
-              mb-10
-              text-sm
-              sm:text-base
-              md:text-lg
-              opacity-80
-              leading-relaxed
-              font-light
-            "
-          >
-            Architecting high-concurrency SaaS solutions, complex scheduling
-            engines, and robust API ecosystems that scale with demand.
+          <p className="text-primary font-bold text-base sm:text-lg md:text-xl mb-6">
+            Backend-Focused MERN Stack Developer
+          </p>
+
+          <p className="max-w-lg mb-8 text-sm sm:text-base opacity-80 leading-relaxed font-light">
+            I build scalable, secure and real-time web applications with
+            modern technologies — architecting high-concurrency SaaS
+            solutions, complex scheduling engines, and robust API ecosystems.
           </p>
 
           {/* CTA BUTTONS */}
-          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="
-                px-7
-                py-4
-                bg-accent
-                text-bg
-                font-black
-                rounded-sm
-                flex
-                items-center
-                gap-2
-                shadow-accent
-                uppercase
-                tracking-widest
-                text-xs
-              "
-            >
-              Examine Systems <ChevronRight size={18} />
-            </motion.button>
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-10">
+            <Button onClick={() => scrollToSection("projects")} icon={<ChevronRight size={18} />}>
+              View My Work
+            </Button>
 
-            <motion.a
-              href="https://github.com/SayantanCode/thematic-portfolio"
-              target="_blank"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="
-                px-7
-                py-4
-                border
-                border-accent/40
-                text-accent
-                font-bold
-                rounded-sm
-                flex
-                items-center
-                gap-2
-                glass-card
-                uppercase
-                tracking-widest
-                text-xs
-              "
-            >
-              <Github size={18} /> Source Access
-            </motion.a>
+            <Button as="a" href="mailto:sayantan648@gmail.com" variant="secondary" icon={<Mail size={18} />}>
+              Get In Touch
+            </Button>
+          </div>
+
+          {/* TECH STACK ROW */}
+          <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+            {SKILLS.map((skill) => (
+              <Tooltip key={skill.name} label={skill.name}>
+                <div
+                  className="w-10 h-10 rounded-lg bg-surface/50 border border-glass-border flex items-center justify-center hover:border-accent/40 hover:scale-110 transition-all duration-300"
+                  style={{ color: skill.color }}
+                >
+                  {skill.icon}
+                </div>
+              </Tooltip>
+            ))}
           </div>
         </motion.div>
 
         {/* RIGHT VISUAL (DESKTOP ONLY) */}
         <div className="hidden lg:block relative h-[32rem]">
           <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
             className="absolute inset-0 flex items-center justify-center"
-            animate={{
-              rotateY: [0, 20, 0],
-              rotateX: [0, 10, 0],
-              y: [0, -20, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
           >
-            <div className="relative w-full h-full">
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="
-                    absolute
-                    w-32
-                    h-32
-                    rounded-xl
-                    glass-card
-                    border-accent/20
-                    flex
-                    items-center
-                    justify-center
-                    shadow-accent/10
-                  "
-                  style={{
-                    top: `${20 + i * 10}%`,
-                    left: `${20 + i * 8}%`,
-                    zIndex: 10 - i,
-                  }}
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{
-                    delay: i * 0.2,
-                    duration: 3,
-                    repeat: Infinity,
-                  }}
-                >
-                  <Cpu className="text-accent opacity-40" size={32} />
-                </motion.div>
-              ))}
+            <motion.img
+              src={heroIllustration}
+              alt="Illustration of a developer working at a desk"
+              animate={{ y: [0, -14, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+            />
+          </motion.div>
 
-              <svg
-                className="absolute inset-0 w-full h-full opacity-20"
-                viewBox="0 0 500 500"
-              >
-                <path
-                  d="M100,100 L400,400"
-                  stroke="var(--accent)"
-                  strokeWidth="1"
-                  fill="none"
-                />
-                <path
-                  d="M400,100 L100,400"
-                  stroke="var(--accent)"
-                  strokeWidth="1"
-                  fill="none"
-                />
-                <circle
-                  cx="250"
-                  cy="250"
-                  r="50"
-                  stroke="var(--accent)"
-                  strokeWidth="2"
-                  fill="none"
-                />
-              </svg>
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            className="absolute top-4 right-4 inline-flex items-center gap-2 px-4 py-2 glass-card border-accent/30 rounded-full"
+          >
+            <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+            <Briefcase size={14} className="text-accent" />
+            <span className="text-[10px] text-accent font-mono uppercase tracking-widest">
+              Open to Opportunities
+            </span>
           </motion.div>
         </div>
       </div>
 
       {/* SCROLL INDICATOR */}
       <motion.div
-        onClick={() => scrollToSection("about-me")}
-        className="
-          absolute
-          bottom-6
-          left-1/2
-          -translate-x-1/2
-          hidden
-          md:flex
-          flex-col
-          items-center
-          gap-2
-          opacity-40
-          cursor-pointer
-        "
+        onClick={() => scrollToSection("about")}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 opacity-40 cursor-pointer"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >

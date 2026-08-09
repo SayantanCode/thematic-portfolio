@@ -13,7 +13,7 @@ export const ThemeSwitcher = () => {
   };
 
   return (
-    <div className="fixed top-6 right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-auto">
+    <div className="fixed top-20 right-4 lg:top-6 lg:right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-auto">
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
