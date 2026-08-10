@@ -10,12 +10,12 @@ const detect = () => {
   const lowCores =
     typeof navigator !== "undefined" &&
     navigator.hardwareConcurrency !== undefined &&
-    navigator.hardwareConcurrency <= 4;
+    navigator.hardwareConcurrency <= 2;
 
   const lowMemory =
     typeof navigator !== "undefined" &&
     navigator.deviceMemory !== undefined &&
-    navigator.deviceMemory <= 4;
+    navigator.deviceMemory <= 2;
 
   return Boolean(prefersReduced || lowCores || lowMemory);
 };
