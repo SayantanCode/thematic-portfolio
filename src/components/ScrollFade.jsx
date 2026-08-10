@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 /**
@@ -8,6 +8,17 @@ import { motion, useScroll, useTransform } from "framer-motion";
  * in as they enter from below and back out as they finally scroll past the
  * top, so the depth language stays consistent with the pinned sections on
  * either side of them instead of abruptly switching to a plain cut.
+ *
+ * Drives that off ONE continuous scroll progress spanning the section's
+ * entire pass-through (top hits viewport bottom -> bottom hits viewport
+ * top), the same pattern ScrollDissolve uses — not two independently
+ * tracked enter/exit progresses. Two independent trackers meant that for
+ * any section shorter than one viewport (routine on mobile, where a section
+ * comfortably taller than a wide desktop viewport can still end up shorter
+ * than a phone's viewport height), the exit fade started advancing before
+ * the enter fade had finished; the min()/max() combinator then fought
+ * between them and the section could never reach full clarity — just a
+ * partial, muddy peak before blurring back out.
  *
  * Deliberately opacity/blur only, no scale: SkillsGrid draws its circuit
  * wires by measuring each card's exact getBoundingClientRect() once on
@@ -20,25 +31,39 @@ import { motion, useScroll, useTransform } from "framer-motion";
  */
 export const ScrollFade = ({ children, className = "" }) => {
   const ref = useRef(null);
+  const [stopTimes, setStopTimes] = useState([0, 0.25, 0.75, 1]);
 
-  const { scrollYProgress: enter } = useScroll({
+  useEffect(() => {
+    const measure = () => {
+      if (!ref.current) return;
+      const sectionHeight = ref.current.offsetHeight;
+      const viewportHeight = window.innerHeight;
+      const totalSpan = sectionHeight + viewportHeight;
+      // Each of the enter/exit transitions should cost about one viewport
+      // height of scroll regardless of how tall the section itself is;
+      // clamp to 0.5 so a section shorter than one viewport still resolves
+      // to a valid (if brief) hold instead of inverted stop times.
+      const edge = Math.min(0.5, viewportHeight / totalSpan);
+      setStopTimes([0, edge, 1 - edge, 1]);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    // Late-loading images/fonts can still shift section height after mount.
+    const settle = setTimeout(measure, 600);
+    return () => {
+      window.removeEventListener("resize", measure);
+      clearTimeout(settle);
+    };
+  }, []);
+
+  const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "start start"],
-  });
-  const { scrollYProgress: exit } = useScroll({
-    target: ref,
-    offset: ["end end", "end start"],
+    offset: ["start end", "end start"],
   });
 
-  const enterOpacity = useTransform(enter, [0, 1], [0, 1]);
-  const enterBlur = useTransform(enter, [0, 1], [10, 0]);
-
-  const exitOpacity = useTransform(exit, [0, 1], [1, 0]);
-  const exitBlur = useTransform(exit, [0, 1], [0, 10]);
-
-  const opacity = useTransform([enterOpacity, exitOpacity], ([a, b]) => Math.min(a, b));
-  const blurPx = useTransform([enterBlur, exitBlur], ([a, b]) => Math.max(a, b));
-  const filter = useTransform(blurPx, (b) => `blur(${b.toFixed(1)}px)`);
+  const opacity = useTransform(scrollYProgress, stopTimes, [0, 1, 1, 0]);
+  const blur = useTransform(scrollYProgress, stopTimes, [10, 0, 0, 10]);
+  const filter = useTransform(blur, (b) => `blur(${b.toFixed(1)}px)`);
 
   return (
     <motion.div ref={ref} style={{ opacity, filter, willChange: "opacity, filter" }} className={className}>

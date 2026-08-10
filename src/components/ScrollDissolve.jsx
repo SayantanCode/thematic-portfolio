@@ -8,7 +8,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 // depth curve finishes (and the section fades out) long before the sticky
 // pin actually releases, leaving a blank gap before the next section's own
 // pin begins.
-const PIN_VH = 200;
+const PIN_VH = 50;
 const CONTAINER_VH = 100 + PIN_VH;
 
 /**
@@ -62,7 +62,11 @@ export const ScrollDissolve = ({ children, className = "", isFirst = false, isLa
   const scaleStops = isFirst ? [1, 1, 1, 1.3] : [0.55, 1, 1, isLast ? 1 : 1.3];
   const opacityStops = isFirst ? [1, 1, 1, isLast ? 1 : 0] : [0, 1, 1, isLast ? 1 : 0];
   const blurStops = isFirst ? [0, 0, 0, isLast ? 0 : 14] : [16, 0, 0, isLast ? 0 : 14];
-  const stopTimes = [0, 0.28, 0.72, 1];
+  // Fade-in/out windows kept tight (vs. the old 0.28) so sections snap into
+  // focus within ~24vh of scroll instead of ~56vh — scrolling should read as
+  // visible change almost immediately, not a long blurry dead zone before
+  // anything sharpens up.
+  const stopTimes = [0, 0.12, 0.88, 1];
 
   const depthScale = useTransform(scrollYProgress, stopTimes, scaleStops);
   const opacity = useTransform(scrollYProgress, stopTimes, opacityStops);
@@ -74,7 +78,7 @@ export const ScrollDissolve = ({ children, className = "", isFirst = false, isLa
   // settles to full focus — nav clicks (scrollToSection) read this back so
   // clicking "About" etc. lands on the sharp, settled frame instead of the
   // still-fading-in start of the pin range.
-  const settleVh = isFirst ? 0 : PIN_VH * 0.28;
+  const settleVh = isFirst ? 0 : PIN_VH * 0.12;
 
   return (
     <div
