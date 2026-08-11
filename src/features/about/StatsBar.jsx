@@ -1,14 +1,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Clock, GitBranch, Star, Package, ArrowRight, ZoomIn, MapPin, Briefcase } from "lucide-react";
-import { SectionHeader } from "./SectionHeader";
-import { Button } from "./ui/Button.jsx";
-import { Modal } from "./ui/Modal.jsx";
-import { useModal } from "../hooks/useModal.js";
-import { getYearsOfExperience } from "../utils/experience.js";
-import { GITHUB_STATS } from "../constants/GitHubStats.js";
-import { scrollToSection } from "../hooks/useSectionScroll.js";
-import profilePhoto from "../assets/me.jpg";
+import { SectionHeader } from "@/shared/components/SectionHeader.jsx";
+import { Button } from "@/shared/ui/Button.jsx";
+import { Modal } from "@/shared/ui/Modal.jsx";
+import { CardContent, CardTitle, CardDescription } from "@/shared/ui/Card.jsx";
+import { useModal } from "@/shared/hooks/useModal.js";
+import { getYearsOfExperience } from "./experience.util.js";
+import { GITHUB_STATS } from "@/constants/githubStats.constants.js";
+import { scrollToSection } from "@/shared/hooks/useSectionScroll.js";
+import profilePhoto from "@/assets/images/me.jpg";
 
 const STATS = [
   { label: "Years Experience", value: getYearsOfExperience(), icon: <Clock size={20} /> },
@@ -66,14 +67,12 @@ export const StatsBar = () => {
             </span>
           </button>
 
-          <div className="flex-1">
-            <h3 className="font-header font-bold text-lg text-primary mb-1">
-              Backend Developer
-            </h3>
-            <p className="text-muted text-sm leading-relaxed mb-4">
+          <CardContent className="flex-1">
+            <CardTitle className="mb-1">Backend Developer</CardTitle>
+            <CardDescription className="mb-4">
               Loves clean code and solving real-world problems — a career
               switcher who traded the classroom for backend architecture.
-            </p>
+            </CardDescription>
             <Button
               variant="ghost"
               size="sm"
@@ -82,7 +81,7 @@ export const StatsBar = () => {
             >
               More About Me
             </Button>
-          </div>
+          </CardContent>
         </motion.div>
 
         <div className="grid grid-cols-2 gap-4 sm:gap-6">
@@ -107,7 +106,11 @@ export const StatsBar = () => {
         </div>
       </div>
 
-      <Modal isOpen={photoModal.isOpen} onClose={photoModal.close}>
+      <Modal
+        isOpen={photoModal.isOpen}
+        onClose={photoModal.close}
+        title="Profile photo and details"
+      >
         <img
           src={profilePhoto}
           alt="Sayantan Chakraborty"

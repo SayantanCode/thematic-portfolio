@@ -21,3 +21,29 @@ export const lighten = (hex, amount) => interpolateColor(hex, "#ffffff", amount)
 
 /** Mixes a hex color toward black by `amount` (0-1). */
 export const darken = (hex, amount) => interpolateColor(hex, "#000000", amount);
+
+/** Hex -> { h: 0-360, s: 0-1, l: 0-1 }. */
+export const hexToHsl = (hex) => {
+  const [r, g, b] = hexToRgb(hex).map((v) => v / 255);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  const delta = max - min;
+
+  if (delta === 0) return { h: 0, s: 0, l };
+
+  const s = delta / (1 - Math.abs(2 * l - 1));
+  let h;
+  switch (max) {
+    case r:
+      h = 60 * (((g - b) / delta) % 6);
+      break;
+    case g:
+      h = 60 * ((b - r) / delta + 2);
+      break;
+    default:
+      h = 60 * ((r - g) / delta + 4);
+  }
+  if (h < 0) h += 360;
+  return { h, s, l };
+};

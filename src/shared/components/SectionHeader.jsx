@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { KineticText } from './text/KineticText.jsx';
+import { KineticText } from '@/shared/components/text/KineticText.jsx';
 
 export const SectionHeader = ({ title, subtitle }) => {
   return (

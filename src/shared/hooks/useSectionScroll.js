@@ -1,4 +1,4 @@
-import { getLenis } from "../lib/smoothScroll.js";
+import { getLenis } from "@/shared/lib/smoothScroll.js";
 
 /**
  * Scrolls to a section by id, routed through Lenis when available so it stays

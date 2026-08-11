@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { SectionHeader } from "./SectionHeader";
+import { SectionHeader } from "@/shared/components/SectionHeader.jsx";
 import { GraduationCap, Briefcase, ExternalLink } from "lucide-react";
-import { TIMELINE } from "../constants/Timeline.js";
+import { TIMELINE } from "@/constants/timeline.constants.js";
 
 const TimelineEntry = ({ entry, index, isLast }) => (
   <motion.div

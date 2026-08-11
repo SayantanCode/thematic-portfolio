@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, MapPin, ChevronUp } from 'lucide-react';
-import { KineticText } from './text/KineticText.jsx';
-import { ParticleTypography } from './text/ParticleTypography.jsx';
-import { FlipWords } from './text/FlipWords.jsx';
-import { usePrefersReducedMotionOrLowPower } from '../hooks/usePrefersReducedMotionOrLowPower';
-import { useMediaQuery } from '../hooks/useMediaQuery';
-import { scrollToSection } from '../hooks/useSectionScroll.js';
-import { Button } from './ui/Button.jsx';
+import { KineticText } from '@/shared/components/text/KineticText.jsx';
+import { ParticleTypography } from '@/shared/components/text/ParticleTypography.jsx';
+import { FlipWords } from '@/shared/components/text/FlipWords.jsx';
+import { usePrefersReducedMotionOrLowPower } from '@/shared/hooks/usePrefersReducedMotionOrLowPower';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
+import { scrollToSection } from '@/shared/hooks/useSectionScroll.js';
+import { Button } from '@/shared/ui/Button.jsx';
 
 const SOCIALS = [
   { Icon: Github, href: "https://github.com/SayantanCode", label: "GitHub" },
@@ -177,18 +177,6 @@ export const Footer = () => {
           >
             <ChevronUp size={20} />
           </button>
-
-          <p className="font-mono text-[10px] text-muted">
-            Hero illustration by{" "}
-            <a
-              href="https://storyset.com/technology"
-              target="_blank"
-              rel="noreferrer"
-              className="interactive underline hover:text-accent transition-colors"
-            >
-              Storyset
-            </a>
-          </p>
         </div>
       </div>
     </footer>

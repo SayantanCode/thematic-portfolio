@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useApi } from "@/hooks/useApi";
-import { themeService } from "@/api/services/theme.service";
-import { PRESET_THEMES } from "@/constants/ThemeConstants";
+import { useApi } from "@/shared/hooks/useApi";
+import { themeService } from "@/services/themeService";
+import { PRESET_THEMES } from "@/config/theme.config";
 
 const ThemeContext = createContext(null);
 

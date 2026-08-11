@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { SectionHeader } from "./SectionHeader";
+import { SectionHeader } from "@/shared/components/SectionHeader.jsx";
 import { Github, Star, GitBranch, ArrowUpRight } from "lucide-react";
-import { GITHUB_STATS } from "../constants/GitHubStats.js";
+import { GITHUB_STATS } from "@/constants/githubStats.constants.js";
+import { CardHeader, CardContent, CardFooter } from "@/shared/ui/Card.jsx";
 
 const totalLangCount = GITHUB_STATS.languages.reduce((sum, l) => sum + l.count, 0);
 
@@ -22,62 +23,66 @@ export const GitHubFootprint = () => {
           viewport={{ once: true }}
           className="glass-card rounded-2xl p-6 sm:p-8 border border-glass-border flex flex-col"
         >
-          <div className="flex items-center gap-3 mb-6">
+          <CardHeader className="flex-row items-center gap-3 mb-6">
             <div className="w-11 h-11 rounded-xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center">
               <Github size={20} />
             </div>
             <span className="font-mono text-xs uppercase tracking-widest text-muted">
               @SayantanCode
             </span>
-          </div>
+          </CardHeader>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <span className="font-header font-black text-3xl text-primary">
-                {GITHUB_STATS.repoCount}+
-              </span>
-              <p className="text-muted text-xs font-mono uppercase tracking-widest mt-1">
-                Public Repos
-              </p>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <span className="font-header font-black text-3xl text-primary">
+                  {GITHUB_STATS.repoCount}+
+                </span>
+                <p className="text-muted text-xs font-mono uppercase tracking-widest mt-1">
+                  Public Repos
+                </p>
+              </div>
+              <div>
+                <span className="font-header font-black text-3xl text-primary">
+                  {GITHUB_STATS.totalStars}
+                </span>
+                <p className="text-muted text-xs font-mono uppercase tracking-widest mt-1">
+                  Total Stars
+                </p>
+              </div>
             </div>
-            <div>
-              <span className="font-header font-black text-3xl text-primary">
-                {GITHUB_STATS.totalStars}
-              </span>
-              <p className="text-muted text-xs font-mono uppercase tracking-widest mt-1">
-                Total Stars
-              </p>
-            </div>
-          </div>
 
-          {/* Language mix bar */}
-          <div className="mb-2">
-            <div className="flex w-full h-2 rounded-full overflow-hidden border border-glass-border">
+            {/* Language mix bar */}
+            <div className="mb-2">
+              <div className="flex w-full h-2 rounded-full overflow-hidden border border-glass-border">
+                {GITHUB_STATS.languages.map((lang) => (
+                  <span
+                    key={lang.name}
+                    style={{ width: `${(lang.count / totalLangCount) * 100}%` }}
+                    className="bg-accent first:opacity-100 [&:not(:first-child)]:bg-accent/40 [&:nth-child(3)]:bg-accent/20"
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
               {GITHUB_STATS.languages.map((lang) => (
-                <span
-                  key={lang.name}
-                  style={{ width: `${(lang.count / totalLangCount) * 100}%` }}
-                  className="bg-accent first:opacity-100 [&:not(:first-child)]:bg-accent/40 [&:nth-child(3)]:bg-accent/20"
-                />
+                <span key={lang.name} className="text-muted text-[10px] font-mono">
+                  {lang.name} · {lang.count}
+                </span>
               ))}
             </div>
-          </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
-            {GITHUB_STATS.languages.map((lang) => (
-              <span key={lang.name} className="text-muted text-[10px] font-mono">
-                {lang.name} · {lang.count}
-              </span>
-            ))}
-          </div>
+          </CardContent>
 
-          <a
-            href={GITHUB_STATS.profileUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="interactive mt-auto inline-flex items-center justify-center gap-2 text-accent font-bold text-sm border-t border-glass-border pt-4 hover:text-accent/80 transition-colors"
-          >
-            View Full Profile <ArrowUpRight size={16} />
-          </a>
+          <CardFooter className="mt-auto pt-4 border-t border-glass-border">
+            <a
+              href={GITHUB_STATS.profileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="interactive w-full inline-flex items-center justify-center gap-2 text-accent font-bold text-sm hover:text-accent/80 transition-colors"
+            >
+              View Full Profile <ArrowUpRight size={16} />
+            </a>
+          </CardFooter>
         </motion.div>
 
         <div className="grid grid-cols-1 gap-4">
@@ -96,12 +101,12 @@ export const GitHubFootprint = () => {
               <div className="w-10 h-10 rounded-lg bg-surface/50 border border-glass-border text-accent flex items-center justify-center shrink-0">
                 <GitBranch size={16} />
               </div>
-              <div className="flex-1 min-w-0">
+              <CardContent className="flex-1 min-w-0">
                 <p className="font-mono font-bold text-sm text-primary truncate">
                   {repo.name}
                 </p>
                 <p className="text-muted text-xs truncate">{repo.note}</p>
-              </div>
+              </CardContent>
               {repo.name === "express-unified-response" && (
                 <span className="flex items-center gap-1 text-accent text-xs font-mono shrink-0">
                   <Star size={12} className="fill-accent" /> 5

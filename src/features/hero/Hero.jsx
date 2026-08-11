@@ -1,19 +1,76 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight, Mail, Briefcase, ChevronUp } from "lucide-react";
-import { scrollToSection } from "../hooks/useSectionScroll.js";
-import { LowPolyName } from "./text/LowPolyName.jsx";
-import { Tooltip } from "./ui/Tooltip.jsx";
-import { Button } from "./ui/Button.jsx";
-import { SKILLS } from "../constants/Skills.jsx";
-import { useAccentColor } from "../hooks/useAccentColor.js";
-import { useMediaQuery } from "../hooks/useMediaQuery.js";
-import heroIllustration from "../assets/hero-illustration.svg";
+import { scrollToSection } from "@/shared/hooks/useSectionScroll.js";
+import { ScrambleText } from "@/shared/components/text/ScrambleText.jsx";
+import { Tooltip } from "@/shared/ui/Tooltip.jsx";
+import { Button } from "@/shared/ui/Button.jsx";
+import { SKILLS } from "@/constants/skills.constants.jsx";
+import { useAccentColor } from "@/shared/hooks/useAccentColor.js";
+import { useCssVarColor } from "@/shared/hooks/useCssVarColor.js";
+import { useMediaQuery } from "@/shared/hooks/useMediaQuery.js";
+import { hexToHsl } from "@/shared/utils/color.js";
+import heroDeveloperPng from "@/assets/images/hero-developer.png";
+import heroDeveloperMask from "@/assets/images/hero-developer-mask.svg";
+import heroDeveloperLightPng from "@/assets/images/hero-developer-light.png";
+import heroDeveloperLightMask from "@/assets/images/hero-developer-light-mask.svg";
+
+// The hue *both* illustrations were actually painted in (the same warm
+// gold ambient glow — see #d4af37, the default "Midnight Gold" accent —
+// carried through intentionally so one rotation formula covers both).
+const IMAGE_BASE_HUE = 46;
 
 export const Hero = () => {
   const accent = useAccentColor();
+  // `--is-light` is the same signal the theme system itself already uses
+  // per-preset: picks which of the two illustrations (and its matching
+  // face/hand mask — the light version's pose sits a little differently,
+  // so the mask coordinates differ too) to use as the base, before the
+  // hue-rotate below nudges it toward the current theme's actual accent.
+  const isLightTheme = useCssVarColor("--is-light", "0") === "1";
+  const heroImageSrc = isLightTheme ? heroDeveloperLightPng : heroDeveloperPng;
+  const heroImageMask = isLightTheme ? heroDeveloperLightMask : heroDeveloperMask;
+
+  const imageFilter = useMemo(() => {
+    const { h, s } = hexToHsl(accent);
+    if (s < 0.15) return "grayscale(0.7) brightness(1.05)"; // near-neutral accent (e.g. a custom black/white theme)
+    // Full, undamped rotation to the exact accent hue — skin is protected
+    // separately by the face/hand mask (see faceMaskStyle below), so there's
+    // no need to also blunt the rotation amount here. An earlier version
+    // damped this to ~40% (capped at 55°) specifically to protect skin
+    // before the mask existed; once the mask took over that job, the same
+    // cap became actively wrong — themes needing very different rotations
+    // (Cyber +137°, Emerald +114°) were both getting crushed down to
+    // ~45-55°, landing in nearly the same yellow-green zone instead of
+    // their actual target hues.
+    let rotation = h - IMAGE_BASE_HUE;
+    rotation = ((rotation + 180) % 360 + 360) % 360 - 180; // normalize to [-180, 180]
+    return `hue-rotate(${rotation.toFixed(0)}deg) saturate(1.08)`;
+  }, [accent]);
+
+  // `mask-size: contain` fits the mask using its own intrinsic aspect ratio
+  // (the SVG's viewBox is 1536x1024, matching the photo exactly) the same
+  // way `object-fit: contain` fits the photo — so this stays pixel-aligned
+  // with the layer below it at any box size, no extra positioning math.
+  const faceMaskStyle = {
+    maskImage: `url(${heroImageMask})`,
+    WebkitMaskImage: `url(${heroImageMask})`,
+    // Explicit, even though the mask's transparent background already makes
+    // it correct under alpha OR luminance masking — no reason to depend on
+    // a browser default that's genuinely inconsistent across engines.
+    maskMode: "alpha",
+    WebkitMaskMode: "alpha",
+    maskSize: "contain",
+    WebkitMaskSize: "contain",
+    maskPosition: "center",
+    WebkitMaskPosition: "center",
+    maskRepeat: "no-repeat",
+    WebkitMaskRepeat: "no-repeat",
+  };
+
   // Mirrors the h1's own text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl —
-  // LowPolyName needs an actual pixel size to size its canvas/SVG output.
+  // ScrambleText needs an actual pixel size since it renders real text at a
+  // fixed font-size rather than inheriting the heading's responsive classes.
   const isSm = useMediaQuery("(min-width: 640px)");
   const isMd = useMediaQuery("(min-width: 768px)");
   const isLg = useMediaQuery("(min-width: 1024px)");
@@ -38,7 +95,14 @@ export const Hero = () => {
 
           <h1 className="font-header font-black leading-tight mb-4 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl flex flex-wrap items-end justify-center lg:justify-start gap-x-3">
             <span>Sayantan</span>
-            <LowPolyName text="Chakraborty" color={accent} fontSize={nameFontSize} delay={0.2} stagger={0.045} />
+            {/* delay outlasts MainLayout's 2000ms preloader (+ its own fade-out) —
+                only applies to the very first reveal; replays triggered by
+                scrolling back into view later use a short fixed beat instead
+                (see ScrambleText.jsx). Hero mounts immediately under that
+                opaque overlay, so without this the scramble plays out fully
+                hidden and only the settled text is ever visible once the
+                preloader clears. */}
+            <ScrambleText text="Chakraborty" color={accent} fontSize={nameFontSize} delay={2.4} />
           </h1>
 
           <p className="text-primary font-bold text-base sm:text-lg md:text-xl mb-6">
@@ -67,6 +131,7 @@ export const Hero = () => {
             {SKILLS.map((skill) => (
               <Tooltip key={skill.name} label={skill.name}>
                 <div
+                  tabIndex={0}
                   className="w-10 h-10 rounded-lg bg-surface/50 border border-glass-border flex items-center justify-center hover:border-accent/40 hover:scale-110 transition-all duration-300"
                   style={{ color: skill.color }}
                 >
@@ -85,13 +150,32 @@ export const Hero = () => {
             transition={{ duration: 1, ease: "easeOut" }}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <motion.img
-              src={heroIllustration}
-              alt="Illustration of a developer working at a desk"
+            <motion.div
               animate={{ y: [0, -14, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
-            />
+              className="relative w-full h-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+            >
+              {/* Base layer: hue-nudged toward the theme's accent — touches
+                  every pixel, including skin. */}
+              <img
+                src={heroImageSrc}
+                alt="Illustration of Sayantan coding at a desk, surrounded by floating code editor and terminal windows"
+                style={{ filter: imageFilter }}
+                className="absolute inset-0 w-full h-full object-contain"
+              />
+              {/* Untouched natural-color layer on top, masked (see
+                  hero-developer-mask.svg / hero-developer-light-mask.svg) to
+                  only show through over the face/neck and the visible hand —
+                  same source image and fit, so it lines up with the layer
+                  below automatically. */}
+              <img
+                src={heroImageSrc}
+                alt=""
+                aria-hidden="true"
+                style={faceMaskStyle}
+                className="absolute inset-0 w-full h-full object-contain"
+              />
+            </motion.div>
           </motion.div>
 
           <motion.div

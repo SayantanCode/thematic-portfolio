@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, User, Code2, Briefcase, Clock, Mail, Menu, X } from "lucide-react";
-import { scrollToSection } from "../hooks/useSectionScroll.js";
-import { useActiveSection } from "../hooks/useActiveSection.js";
+import { scrollToSection } from "@/shared/hooks/useSectionScroll.js";
+import { useActiveSection } from "@/shared/hooks/useActiveSection.js";
 
 const NAV_ITEMS = [
   { id: "home", label: "Home", Icon: Home },

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024">
+  <!--
+    Mask for hero-developer-light.png. Same alpha-based approach as
+    hero-developer-mask.svg (see that file for why: opaque white = shows the
+    natural-color layer, transparent = shows the hue-rotated layer, and it
+    must be built on actual transparency rather than a black background
+    because externally-referenced SVG masks are inconsistently alpha- vs
+    luminance-moded across browsers).
+    Different coordinates from the dark version — this pose sits with the
+    head a bit higher/hair bigger, so the face center moved up relative to
+    the original. Hand-placed visual estimate again, not true segmentation.
+  -->
+  <g filter="url(#soften)">
+    <ellipse cx="875" cy="275" rx="150" ry="135" fill="white" />
+    <ellipse cx="915" cy="665" rx="80" ry="48" fill="white" />
+  </g>
+  <defs>
+    <filter id="soften" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="28" />
+    </filter>
+  </defs>
+</svg>

@@ -13,8 +13,8 @@ import { useCallback, useState } from "react";
  * The execute function will throw the error if it is caught so that it can be caught higher up in the component tree.
  * @example
  * import { useEffect } from "react";
- * import { useApi } from "@/hooks/useApi";
- * import { userService } from "@/api/services/user.service";
+ * import { useApi } from "@/shared/hooks/useApi";
+ * import { userService } from "@/services/userService";
 
  * const { data, error, loading, execute } = useApi(userService.fetchUsers);
  * useEffect(() => {

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { useCssVarColor } from "../../hooks/useCssVarColor";
+import { useCssVarColor } from "@/shared/hooks/useCssVarColor";
 
 /**
  * Renders `text` as a field of particles sampled from its glyph shapes on an

@@ -9,6 +9,11 @@
   --color-text-primary: var(--text);
   --color-text-muted: var(--text-muted);
   --color-glass-border: var(--glass-border);
+  /* Aliases so the widely-used `text-primary`/`text-muted` utility classes
+     (already used across 25+ files) actually resolve to something, instead
+     of silently falling through to nothing. */
+  --color-primary: var(--text);
+  --color-muted: var(--text-muted);
 
   --font-header: "Montserrat", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -202,5 +207,35 @@
     to {
       stroke-dashoffset: -28;
     }
+  }
+
+  /* One-shot resolve "spark" on a ScrambleText character locking in —
+     deliberately a single brightness pulse per character, not a repeating
+     strobe across the whole word (see ScrambleText.jsx for why). */
+  .scramble-flash {
+    animation: scramble-lock-flash 0.26s ease-out;
+  }
+  @keyframes scramble-lock-flash {
+    0% {
+      filter: brightness(2.4);
+    }
+    100% {
+      filter: brightness(1);
+    }
+  }
+
+  /* Was App.css — small directional arrow marker, folded in rather than
+     kept as a second stray global stylesheet. */
+  .arrow-design {
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 10px solid var(--accent);
   }
 }

@@ -1,67 +1,26 @@
-import React, { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { useModalStack } from "../../context/ModalContext.jsx";
+import React from "react";
+import { Dialog } from "./Dialog.jsx";
+import { Drawer } from "./Drawer.jsx";
+import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 
 /**
- * Generic modal — pass isOpen/onClose (see useModal) and whatever children
- * you want rendered inside the card. Closes on backdrop click or Escape,
- * locks body scroll while open.
+ * Reusable responsive modal — picks Dialog (centered, desktop) or Drawer
+ * (bottom sheet, mobile) at the same breakpoint Sidebar.jsx uses for its own
+ * desktop/mobile split, so both stay in sync as one visual language. Same
+ * public API as before (isOpen/onClose/children/className), plus a new
+ * optional `title` for screen readers — the old version had none at all.
  *
- * Rendering and stacking (portal target, z-index, which modal Escape closes,
- * when body scroll unlocks) are all owned by ModalProvider — this component
- * just registers itself on the shared stack while open. Nest as many of
- * these as needed; they'll stack and unwind correctly regardless of order.
+ * Dialog.jsx and Drawer.jsx are each independently importable too, for any
+ * future spot that specifically wants "always a dialog" or "always a
+ * drawer" instead of this breakpoint-driven choice.
  */
-export const Modal = ({ isOpen, onClose, children, className = "" }) => {
-  const { push, pop, root } = useModalStack();
-  const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+export const Modal = ({ isOpen, onClose, title, children, className = "" }) => {
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const Variant = isMobile ? Drawer : Dialog;
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const id = push(() => onCloseRef.current());
-    return () => pop(id);
-  }, [isOpen, push, pop]);
-
-  if (!root) return null;
-
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 flex items-center justify-center bg-bg/95 backdrop-blur-md p-6"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(e) => e.stopPropagation()}
-            className={`relative glass-card rounded-2xl border border-accent/20 shadow-[0_0_60px_var(--accent-glow)] max-w-lg w-full max-h-[85vh] overflow-hidden ${className}`}
-          >
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              className="interactive absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-surface/80 border border-glass-border text-muted hover:text-accent hover:border-accent/40 flex items-center justify-center transition-colors"
-            >
-              <X size={18} />
-            </button>
-            {/* Scroll happens in here, not on the rounded outer card — keeps
-                the scrollbar clipped to the corners instead of poking past
-                them, and keeps the close button pinned above the content. */}
-            <div data-lenis-prevent className="modal-scroll max-h-[85vh] overflow-y-auto">
-              {children}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    root
+  return (
+    <Variant open={isOpen} onClose={onClose} title={title} className={className}>
+      {children}
+    </Variant>
   );
 };

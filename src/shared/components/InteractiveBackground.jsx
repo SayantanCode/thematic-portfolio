@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { usePrefersReducedMotionOrLowPower } from "../hooks/usePrefersReducedMotionOrLowPower";
+import { usePrefersReducedMotionOrLowPower } from "@/shared/hooks/usePrefersReducedMotionOrLowPower";
 
 const SceneBackground = lazy(() => import("./SceneBackground.jsx"));
 

@@ -1,8 +1,8 @@
 import React, { forwardRef, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { SKILL_CATEGORIES, TOOLS } from "../constants/Skills.jsx";
-import { useAccentColor } from "../hooks/useAccentColor.js";
-import { Tooltip } from "./ui/Tooltip.jsx";
+import { SKILL_CATEGORIES, TOOLS } from "@/constants/skills.constants.jsx";
+import { useAccentColor } from "@/shared/hooks/useAccentColor.js";
+import { Tooltip } from "@/shared/ui/Tooltip.jsx";
 
 const [FRONTEND, BACKEND, DATA] = SKILL_CATEGORIES;
 
@@ -245,6 +245,7 @@ export const SkillsGrid = () => {
           {TOOLS.map((tool) => (
             <Tooltip key={tool.name} label={tool.name}>
               <div
+                tabIndex={0}
                 className="w-11 h-11 rounded-lg bg-surface/60 border border-glass-border flex items-center justify-center hover:scale-110 transition-transform duration-300"
                 style={{ color: tool.color }}
               >

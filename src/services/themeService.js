@@ -1,4 +1,4 @@
-import { publicApi } from "../clients";
+import { publicApi } from "./clients";
 
 export const themeService = {
   fetchTheme: (query) =>

@@ -1,11 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { SectionHeader } from "./SectionHeader";
+import { SectionHeader } from "@/shared/components/SectionHeader.jsx";
 import { ArrowUpRight } from "lucide-react";
-import golfPosImg from "../assets/projects/golf-pos.jpg";
-import vayoImg from "../assets/projects/vayo.jpg";
-import shopdesiImg from "../assets/projects/shopdesi.jpg";
-import cliImg from "../assets/projects/create-structure-cli.jpg";
+import { CardContent } from "@/shared/ui/Card.jsx";
+import golfPosImg from "@/assets/images/projects/golf-pos.jpg";
+import vayoImg from "@/assets/images/projects/vayo.jpg";
+import shopdesiImg from "@/assets/images/projects/shopdesi.jpg";
+import cliImg from "@/assets/images/projects/create-structure-cli.jpg";
 
 const PROJECTS = [
   {
@@ -67,7 +68,7 @@ const ProjectCard = ({ project, index }) => (
       )}
     </div>
 
-    <div className="p-5 sm:p-6 flex flex-col flex-1">
+    <CardContent className="p-5 sm:p-6 flex flex-col flex-1">
       <div className="flex items-start justify-between gap-3 mb-2">
         <h3 className="font-header font-bold text-lg text-primary">
           {project.name}
@@ -92,7 +93,7 @@ const ProjectCard = ({ project, index }) => (
           </span>
         ))}
       </div>
-    </div>
+    </CardContent>
   </motion.a>
 );
 

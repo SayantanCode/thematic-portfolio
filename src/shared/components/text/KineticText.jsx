@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { interpolateColor } from "../../utils/color.js";
+import { interpolateColor } from "@/shared/utils/color.js";
 
 const splitToTokens = (text, splitBy) => {
   if (splitBy === "char") return text.split("");

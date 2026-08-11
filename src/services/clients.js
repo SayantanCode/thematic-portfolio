@@ -1,14 +1,15 @@
-import { createApiClient } from "./createApiClient";
+import { createApiClient } from "./apiClient";
+import { ENV } from "@/config/env.config.js";
 
 /* Internal Private APIs */
 export const api = createApiClient({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
+  baseURL: ENV.API_BASE_URL,
   withAuth: true,
 });
 
 /* Internal Public APIs (no auth) */
 export const publicApi = createApiClient({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
+  baseURL: ENV.API_BASE_URL,
   withAuth: false,
 });
 // Here 3rd party APIs can be added 

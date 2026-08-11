@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024">
+  <!--
+    Mask for hero-developer.png: opaque white = untouched (shows the
+    natural-color layer), transparent = hue-rotated (shows the theme-adapted
+    layer). Deliberately built on alpha, not a black background + luminance —
+    browsers disagree on whether an externally-referenced SVG mask defaults
+    to luminance or alpha mode, and an opaque black background is "visible"
+    under alpha-mode masking regardless of color, which silently makes the
+    natural-color layer cover the entire image instead of just the ellipses.
+    True transparency (alpha 0) is unambiguous under both interpretations.
+    Same intrinsic aspect ratio (3:2) as the photo, referenced with
+    mask-size:contain — so it scales/letterboxes identically to the photo's
+    own object-fit:contain and lines up regardless of the container's box
+    shape, without any extra positioning math.
+    Coordinates are hand-placed (visual estimate, not true segmentation) over
+    the face/neck and the visible hand on the keyboard; the heavy blur gives
+    a soft, forgiving edge rather than a hard cutout.
+  -->
+  <g filter="url(#soften)">
+    <ellipse cx="877" cy="300" rx="150" ry="135" fill="white" />
+    <ellipse cx="920" cy="655" rx="80" ry="48" fill="white" />
+  </g>
+  <defs>
+    <filter id="soften" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="28" />
+    </filter>
+  </defs>
+</svg>

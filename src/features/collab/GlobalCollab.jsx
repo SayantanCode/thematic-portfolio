@@ -2,8 +2,9 @@ import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DottedMap from "dotted-map/without-countries";
 import { MapPin } from "lucide-react";
-import { SectionHeader } from "./SectionHeader";
-import worldMapData from "../constants/worldMapData.json";
+import { SectionHeader } from "@/shared/components/SectionHeader.jsx";
+import worldMapData from "@/assets/data/worldMapData.json";
+import { CardContent } from "@/shared/ui/Card.jsx";
 
 const PINS = [
   { id: "kolkata", lat: 22.5726, lng: 88.3639, label: "Kolkata, India", sublabel: "Hih7 Webtech — my team" },
@@ -55,6 +56,7 @@ export const GlobalCollab = () => {
         viewport={{ once: true }}
         className="glass-card rounded-2xl p-4 sm:p-8 border border-glass-border max-w-4xl mx-auto"
       >
+        <CardContent>
         <div className="relative">
           <svg
             viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
@@ -202,6 +204,7 @@ export const GlobalCollab = () => {
             </div>
           ))}
         </div>
+        </CardContent>
       </motion.div>
     </section>
   );
