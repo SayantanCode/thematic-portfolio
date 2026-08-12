@@ -24,13 +24,13 @@ export const InteractiveBackground = () => {
       )}
 
       {/* Grid Pattern: uses 'var(--accent)' for the dots */}
-      <div
+      {/* <div
         className="absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage: `radial-gradient(var(--accent) 1px, transparent 10px)`,
           backgroundSize: "40px 40px",
         }}
-      />
+      /> */}
     </div>
   );
 };

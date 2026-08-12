@@ -18,9 +18,10 @@ const REPLAY_DELAY_MS = 150; // beat before re-decoding on repeat entries
  * Renders `text` as a terminal-style decode: every character starts as a
  * random glyph (letters + a few code symbols) cycling rapidly, then locks
  * into its real character one at a time, left to right, like a name being
- * resolved/compiled rather than drawn. A blinking cursor trails the
- * scramble and disappears once fully settled; each character gets a brief
- * brightness "spark" the instant it locks in.
+ * resolved/compiled rather than drawn. A blinking cursor trails it and
+ * keeps blinking permanently once settled too — reads as a live terminal
+ * prompt sitting there, not just a one-off loading indicator. Each
+ * character also gets a brief brightness "spark" the instant it locks in.
  *
  * Replays every time the element re-enters the viewport (not just once) —
  * scroll away from the hero and back and it re-decodes. Deliberately *not*
@@ -48,7 +49,6 @@ export const ScrambleText = ({
   const [display, setDisplay] = useState(() =>
     reduceMotion ? chars.map((c) => ({ char: c, flashing: false })) : chars.map((c) => ({ char: c === " " ? " " : randomGlyph(), flashing: false }))
   );
-  const [settled, setSettled] = useState(reduceMotion);
   const intervalRef = useRef(null);
   const hasRevealedOnceRef = useRef(false);
 
@@ -69,7 +69,6 @@ export const ScrambleText = ({
       const totalMs = chars.length * staggerMs + LOCK_DURATION_MS;
       const startedAt = performance.now() + revealDelayMs;
 
-      setSettled(false);
       setDisplay(chars.map((c) => ({ char: c === " " ? " " : randomGlyph(), flashing: false })));
 
       intervalRef.current = setInterval(() => {
@@ -90,7 +89,6 @@ export const ScrambleText = ({
           clearInterval(intervalRef.current);
           intervalRef.current = null;
           setDisplay(chars.map((c) => ({ char: c, flashing: false })));
-          setSettled(true);
         }
       }, TICK_MS);
     };
@@ -133,11 +131,9 @@ export const ScrambleText = ({
           </span>
         ))}
       </span>
-      {!settled && (
-        <span aria-hidden="true" className="animate-pulse" style={{ marginLeft: "0.05em" }}>
-          _
-        </span>
-      )}
+      <span aria-hidden="true" className="animate-pulse" style={{ marginLeft: "0.05em" }}>
+        _
+      </span>
     </span>
   );
 };
