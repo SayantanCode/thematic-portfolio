@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePrefersReducedMotionOrLowPower } from "@/shared/hooks/usePrefersReducedMotionOrLowPower";
 
 // Weighted toward plain letters so it reads as "unresolved text", not pure
@@ -53,6 +53,27 @@ export const ScrambleText = ({
   const hasRevealedOnceRef = useRef(false);
 
   const containerRef = useRef(null);
+  // Random scramble glyphs (esp. the mixed-in symbols) don't share the same
+  // advance width as the final letters — left to size naturally, the
+  // in-progress text can render wider than the settled word, which was
+  // tipping a flex-wrap parent (the Hero h1) onto a second line mid-decode
+  // and then snapping back once it locked in. Measuring each *final*
+  // character's real width up front and pinning every glyph slot to that
+  // width (scrambled or settled) keeps the rendered width constant across
+  // the whole animation, so it can never be wider than the text it settles
+  // into.
+  const [charWidths, setCharWidths] = useState(null);
+
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const computed = window.getComputedStyle(el);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.font = `${computed.fontWeight} ${computed.fontSize} ${computed.fontFamily}`;
+    setCharWidths(chars.map((c) => ctx.measureText(c).width));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, fontSize]);
 
   useEffect(() => {
     if (reduceMotion) return;
@@ -125,13 +146,18 @@ export const ScrambleText = ({
           <span
             key={i}
             className={d.flashing ? "scramble-flash" : undefined}
-            style={{ display: "inline-block", whiteSpace: "pre" }}
+            style={{
+              display: "inline-block",
+              whiteSpace: "pre",
+              width: charWidths ? `${charWidths[i]}px` : undefined,
+              textAlign: charWidths ? "center" : undefined,
+            }}
           >
             {d.char}
           </span>
         ))}
       </span>
-      <span aria-hidden="true" className="animate-pulse" style={{ marginLeft: "0.05em" }}>
+      <span aria-hidden="true" className="terminal-cursor-blink" style={{ marginLeft: "0.05em" }}>
         _
       </span>
     </span>

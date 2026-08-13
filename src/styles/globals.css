@@ -92,6 +92,26 @@
     @apply transition-colors duration-300;
   }
 
+  /* The custom cursor (LiquidCursor) is what makes the pointer visible at
+     all — the rule above hides the real OS cursor everywhere so that
+     component can draw its own. If LiquidCursor itself unmounts (e.g. the
+     ErrorBoundary catches a crash in it or in SplashCursor/SceneBackground,
+     which sit in the same tree), nothing replaces it: the cursor becomes
+     fully invisible, not just uninteractive — clicks still register, but
+     with no visible pointer there's no way to aim them. A class selector's
+     specificity beats the universal selector above even with matching
+     !important, so this reliably wins wherever it's applied (e.g. the
+     ErrorBoundary fallback) regardless of stylesheet order. */
+  .cursor-restore,
+  .cursor-restore * {
+    cursor: default !important;
+  }
+  .cursor-restore button,
+  .cursor-restore a,
+  .cursor-restore [role="button"] {
+    cursor: pointer !important;
+  }
+
   body {
     @apply bg-bg text-text-primary transition-colors duration-500;
     background-color: var(--bg) !important;
@@ -222,6 +242,79 @@
     100% {
       filter: brightness(1);
     }
+  }
+
+  /* A real terminal cursor snaps fully on/off — Tailwind's animate-pulse is
+     a smooth opacity ease (1 → 0.5 → 1), which reads as "fading", not
+     "blinking". steps(1, end) makes it a hard cut instead. */
+  .terminal-cursor-blink {
+    animation: terminal-blink 1.05s steps(1, end) infinite;
+  }
+  @keyframes terminal-blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    50.01%, 100% {
+      opacity: 0;
+    }
+  }
+
+  /* ErrorBoundary's fallback screen — RGB-split glitch heading (classic
+     dual ::before/::after duplicate-with-offset-clip technique, driven by
+     `data-text` so it needs no JS beyond the attribute) and a slow scanline
+     sweep. Pure CSS, no motion/three.js dependency, so this still renders
+     correctly no matter which of those crashed to get here. */
+  .glitch-heading {
+    position: relative;
+  }
+  .glitch-heading::before,
+  .glitch-heading::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    color: var(--accent);
+  }
+  .glitch-heading::before {
+    text-shadow: -3px 0 #ff2b6e;
+    animation: glitch-slice-1 4s infinite linear alternate-reverse;
+  }
+  .glitch-heading::after {
+    text-shadow: 3px 0 #00e5ff;
+    animation: glitch-slice-2 3.2s infinite linear alternate-reverse;
+  }
+  @keyframes glitch-slice-1 {
+    0% { clip-path: inset(8% 0 82% 0); }
+    20% { clip-path: inset(62% 0 5% 0); }
+    40% { clip-path: inset(32% 0 45% 0); }
+    60% { clip-path: inset(82% 0 3% 0); }
+    80% { clip-path: inset(4% 0 72% 0); }
+    100% { clip-path: inset(48% 0 28% 0); }
+  }
+  @keyframes glitch-slice-2 {
+    0% { clip-path: inset(72% 0 9% 0); }
+    20% { clip-path: inset(14% 0 62% 0); }
+    40% { clip-path: inset(52% 0 22% 0); }
+    60% { clip-path: inset(6% 0 84% 0); }
+    80% { clip-path: inset(66% 0 7% 0); }
+    100% { clip-path: inset(22% 0 54% 0); }
+  }
+
+  .error-scanline {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 12%, transparent) 50%,
+      transparent 100%
+    );
+    height: 40%;
+    animation: error-scanline-sweep 5s ease-in-out infinite;
+  }
+  @keyframes error-scanline-sweep {
+    0% { transform: translateY(-100%); }
+    50% { transform: translateY(250%); }
+    100% { transform: translateY(-100%); }
   }
 
   /* Was App.css — small directional arrow marker, folded in rather than

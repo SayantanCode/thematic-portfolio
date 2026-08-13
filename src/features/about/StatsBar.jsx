@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Clock, GitBranch, Star, Package, ArrowRight, ZoomIn, MapPin, Briefcase } from "lucide-react";
+import { Clock, GitBranch, Star, Package, ArrowRight, ZoomIn, MapPin, Briefcase, Download } from "lucide-react";
 import { SectionHeader } from "@/shared/components/SectionHeader.jsx";
 import { Button } from "@/shared/ui/Button.jsx";
 import { Modal } from "@/shared/ui/Modal.jsx";
@@ -40,32 +40,50 @@ export const StatsBar = () => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="glass-card rounded-2xl p-6 flex flex-col sm:flex-row lg:flex-col gap-5 items-center sm:items-start lg:items-start border border-glass-border"
+          className="glass-card rounded-2xl p-6 flex flex-col sm:flex-row gap-5 sm:gap-6 items-center sm:items-start border border-glass-border"
         >
-          <button
-            onClick={photoModal.open}
-            aria-label="Enlarge profile photo"
-            className="interactive group relative shrink-0"
-          >
-            <img
-              src={profilePhoto}
-              alt="Sayantan Chakraborty"
-              className="w-24 h-24 rounded-2xl object-cover border border-accent/30 grayscale group-hover:grayscale-0 transition-all duration-500"
-            />
-            <span className="absolute inset-0 rounded-2xl bg-bg/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-              <ZoomIn size={20} className="text-accent" />
-            </span>
-            {/* Persistent affordance so it reads as clickable before hover */}
-            <span className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-accent text-bg flex items-center justify-center shadow-[0_0_12px_var(--accent-glow)]">
-              <motion.span
-                animate={{ scale: [1, 1.15, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex"
-              >
-                <ZoomIn size={12} />
-              </motion.span>
-            </span>
-          </button>
+          <div className="relative shrink-0 mb-3">
+            <button
+              onClick={photoModal.open}
+              aria-label="Enlarge profile photo"
+              className="interactive group relative block"
+            >
+              <img
+                src={profilePhoto}
+                alt="Sayantan Chakraborty"
+                className="w-32 sm:w-36 aspect-3/4 rounded-2xl object-cover border border-accent/30 grayscale group-hover:grayscale-0 transition-all duration-500"
+              />
+              <span className="absolute inset-0 rounded-2xl bg-bg/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+                <ZoomIn size={20} className="text-accent" />
+              </span>
+              {/* Persistent affordance so it reads as clickable before hover */}
+              <span className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-accent text-bg flex items-center justify-center shadow-[0_0_12px_var(--accent-glow)]">
+                <motion.span
+                  animate={{ scale: [1, 1.15, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="flex"
+                >
+                  <ZoomIn size={12} />
+                </motion.span>
+              </span>
+            </button>
+
+            {/* Download CV — a labeled plate hanging off the bottom of the
+                frame, like a nameplate, so it actually reads as "download
+                my resume" instead of being an unlabeled icon nobody would
+                click. Source TBD (static asset, external link, or jsPDF);
+                points at the conventional /resume.pdf public-asset path for
+                now, so dropping a file there works with no code change. */}
+            <a
+              href="/resume.pdf"
+              download
+              aria-label="Download CV"
+              className="interactive absolute inset-x-2 -bottom-3 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-accent text-bg text-[10px] font-black uppercase tracking-widest shadow-[0_4px_10px_var(--accent-glow)] hover:brightness-110 transition-[filter]"
+            >
+              <Download size={12} />
+              Download CV
+            </a>
+          </div>
 
           <CardContent className="flex-1">
             <CardTitle className="mb-1">Backend Developer</CardTitle>
