@@ -20,6 +20,7 @@ export const ParticleTypography = ({
   returnSpeed = 0.08,
   height = 140,
   glow = false,
+  glowBlur = 12,
   className = "",
 }) => {
   const canvasRef = useRef(null);
@@ -122,7 +123,7 @@ export const ParticleTypography = ({
       ctx.fillStyle = colorRef.current;
       if (glow) {
         ctx.shadowColor = colorRef.current;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = glowBlur;
       }
 
       for (let i = 0; i < particles.length; i++) {
@@ -165,7 +166,7 @@ export const ParticleTypography = ({
       cancelAnimationFrame(rafId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, fontSize, fontFamily, fontWeight, particleSize, particleDensity, dispersionStrength, returnSpeed, height]);
+  }, [text, fontSize, fontFamily, fontWeight, particleSize, particleDensity, dispersionStrength, returnSpeed, height, glow, glowBlur]);
 
   return (
     <div className={className} style={{ width: "100%", height }}>

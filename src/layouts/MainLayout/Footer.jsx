@@ -28,11 +28,8 @@ const QUICK_LINKS = [
 export const Footer = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
   const reduceMotion = usePrefersReducedMotionOrLowPower();
-  // Particle typography needs real horizontal room to stay legible — the font
-  // has to shrink so much on narrow screens that individual letters blur
-  // together, so narrow viewports get the plain kinetic-text treatment too.
   const isNarrowViewport = useMediaQuery('(max-width: 639px)');
-  const useParticles = !reduceMotion && !isNarrowViewport;
+  const useParticles = !reduceMotion;
 
   return (
     <footer id="contact" className="relative pt-24 pb-8 overflow-hidden border-t border-glass-border">
@@ -59,17 +56,22 @@ export const Footer = () => {
               <ParticleTypography
                 text="LET'S BUILD"
                 colorVar="--text"
-                fontSize={90}
-                height={110}
+                fontSize={isNarrowViewport ? 44 : 90}
+                height={isNarrowViewport ? 64 : 110}
+                particleSize={isNarrowViewport ? 1.2 : 1.6}
+                particleDensity={isNarrowViewport ? 3 : 4}
               />
               <ParticleTypography
                 text="SOMETHING"
                 colorVar="--accent"
-                fontSize={64}
-                height={100}
+                fontSize={isNarrowViewport ? 34 : 64}
+                height={isNarrowViewport ? 52 : 100}
+                particleSize={isNarrowViewport ? 1.1 : 1.6}
+                particleDensity={isNarrowViewport ? 3 : 4}
+                glowBlur={isNarrowViewport ? 4 : 12}
                 glow
               />
-              <div className="flex justify-center font-header font-black uppercase tracking-tighter text-accent text-5xl md:text-[64px] drop-shadow-[0_0_20px_var(--accent-glow)] -mt-4">
+              <div className={`flex justify-center font-header font-black uppercase tracking-tighter text-accent text-4xl sm:text-5xl md:text-[64px] drop-shadow-[0_0_20px_var(--accent-glow)] ${isNarrowViewport ? 'mt-1' : '-mt-4'}`}>
                 <FlipWords words={FLIP_WORDS} disabled={reduceMotion} />
               </div>
             </div>

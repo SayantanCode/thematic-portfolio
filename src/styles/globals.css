@@ -121,12 +121,18 @@
     cursor: pointer !important;
   }
 
+  html {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+
   body {
     @apply bg-bg text-text-primary transition-colors duration-500;
     background-color: var(--bg) !important;
     color: var(--text);
     font-family: "Inter", sans-serif;
     overflow-x: hidden;
+    overscroll-behavior-x: none;
   }
 
   ::-webkit-scrollbar {

@@ -97,7 +97,7 @@ export const StatsBar = () => {
               onClick={() => scrollToSection("journey")}
               icon={<ArrowRight size={14} />}
             >
-              More About Me
+              Discover My Journey
             </Button>
           </CardContent>
         </motion.div>
