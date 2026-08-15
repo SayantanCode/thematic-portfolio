@@ -4,6 +4,7 @@ import { Palette, X, ChevronUp, ChevronDown } from "lucide-react";
 import { useTheme } from "@/shared/contexts/ThemeContext";
 import { useModal } from "@/shared/hooks/useModal.js";
 import { useLenisLock } from "@/shared/hooks/useLenisLock.js";
+import { radialThemeTransition, crossesLightDarkBoundary, warmIsLightCache } from "@/shared/lib/viewTransition.js";
 
 const VISIBLE_COUNT = 3;
 const RADIUS = 160;
@@ -47,9 +48,40 @@ export const ThemeSwitcher = () => {
     (t) => theme.type === t.type && (t.type === "preset" ? theme.name === t.name : theme.id === t.id)
   );
 
-  const handleThemeChange = (t) => {
-    setTheme(t);
-    panel.close();
+  // Pre-resolves every theme's light/dark-ness while the panel is open and
+  // idle, so handleThemeChange's click handler never has to touch the DOM
+  // itself — see warmIsLightCache's comment for why that matters.
+  useEffect(() => {
+    if (panel.isOpen) warmIsLightCache(availableThemes);
+  }, [panel.isOpen, availableThemes]);
+
+  // Holds the swap to run once the panel's close animation genuinely
+  // finishes (fired from AnimatePresence's onExitComplete below) — used
+  // only for same-kind switches, where the panel's own fade-out is worth
+  // protecting. Crossing switches apply immediately since the panel is
+  // hidden under the radial wipe either way.
+  const pendingSwapRef = useRef(null);
+
+  const handleThemeChange = (t, event) => {
+    const origin = event ? { x: event.clientX, y: event.clientY } : undefined;
+    const willCross = crossesLightDarkBoundary(theme, t);
+    const applySwap = () => radialThemeTransition(() => setTheme(t), { origin, fromTheme: theme, toTheme: t });
+
+    if (willCross) {
+      panel.close();
+      applySwap();
+    } else {
+      pendingSwapRef.current = applySwap;
+      panel.close();
+    }
+  };
+
+  const handlePanelExitComplete = () => {
+    const swap = pendingSwapRef.current;
+    if (swap) {
+      pendingSwapRef.current = null;
+      swap();
+    }
   };
 
   const step = (dir) => {
@@ -132,7 +164,7 @@ export const ThemeSwitcher = () => {
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={handlePanelExitComplete}>
         {panel.isOpen && (
           <motion.div
             key="backdrop"
@@ -260,7 +292,7 @@ export const ThemeSwitcher = () => {
                 return (
                   <motion.button
                     key={t.type === "preset" ? t.name : t.id}
-                    onClick={() => handleThemeChange(t)}
+                    onClick={(e) => handleThemeChange(t, e)}
                     initial={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}
                     animate={{ opacity: visible ? 1 : 0, scale: visible ? 1 : 0.6, x: dx, y: dy }}
                     exit={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}

@@ -33,6 +33,15 @@
     --gold-dark: #b8860b;
   }
 
+  /* Explicit even though it duplicates :root's own values — the radial
+     theme-transition probe (viewTransition.js) reads --is-light off a
+     detached element carrying just this attribute, which doesn't match
+     :root and would otherwise inherit whatever theme is currently live
+     instead of resolving "default" on its own. */
+  [data-theme="default"] {
+    --is-light: 0;
+  }
+
   [data-theme="cyber"] {
     --bg: #050505;
     --surface: #121212;
@@ -154,6 +163,30 @@
   .modal-scroll::-webkit-scrollbar-thumb:hover {
     background-color: color-mix(in srgb, var(--accent) 100%, white 15%);
   }
+}
+
+/* Theme-switch radial reveal (see ThemeSwitcher.jsx + shared/lib/viewTransition.js).
+   Disable the View Transitions API's default cross-fade so the old theme
+   sits still underneath while we manually animate the new theme's
+   clip-path circle expanding over it from the click point. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* While the radial reveal runs, every element's own transition-colors
+   (below) would otherwise fade in parallel with it — pointless paint work
+   competing with the reveal for frame budget. Suppressed for the duration. */
+.theme-radial-active,
+.theme-radial-active * {
+  transition: none !important;
 }
 
 @layer components {
