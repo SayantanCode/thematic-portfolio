@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Palette, X, ChevronUp, ChevronDown } from "lucide-react";
 import { useTheme } from "@/shared/contexts/ThemeContext";
 import { useModal } from "@/shared/hooks/useModal.js";
-import { getLenis } from "@/shared/lib/smoothScroll.js";
+import { useLenisLock } from "@/shared/hooks/useLenisLock.js";
 
 const VISIBLE_COUNT = 3;
 const RADIUS = 160;
@@ -64,20 +64,7 @@ export const ThemeSwitcher = () => {
     }
   }, [panel.isOpen, activeIndex, count]);
 
-  useEffect(() => {
-    const lenis = getLenis();
-    if (panel.isOpen) {
-      if (lenis) lenis.stop();
-      document.body.style.overflow = "hidden";
-    } else {
-      if (lenis) lenis.start();
-      document.body.style.overflow = "";
-    }
-    return () => {
-      if (lenis) lenis.start();
-      document.body.style.overflow = "";
-    };
-  }, [panel.isOpen]);
+  useLenisLock(panel.isOpen);
 
   useEffect(() => {
     if (!panel.isOpen) return;

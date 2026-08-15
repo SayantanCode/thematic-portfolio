@@ -1,9 +1,14 @@
 // Real chronological history — sourced directly from LinkedIn + certificates,
-// not invented. Oldest first.
+// not invented. `start`/`end` are ISO dates for sorting; `end: null` marks
+// the entry as still ongoing. Display order in JourneyTimeline is derived
+// from these, not from this array's order — so this can later be replaced
+// by an API/DB response in any order without breaking the sort.
 export const TIMELINE = [
   {
     id: "ba",
     period: "2017 — 2020",
+    start: "2017-01-01",
+    end: "2020-01-01",
     title: "Bachelor of Arts (BA)",
     org: "Khalisani Mahavidyalaya",
     type: "education",
@@ -13,6 +18,8 @@ export const TIMELINE = [
   {
     id: "teacher",
     period: "Apr 2022 — May 2023",
+    start: "2022-04-01",
+    end: "2023-05-01",
     title: "School Teacher",
     org: "Lords International School",
     type: "work",
@@ -22,6 +29,8 @@ export const TIMELINE = [
   {
     id: "transition",
     period: "Jun 2023 — Nov 2024",
+    start: "2023-06-01",
+    end: "2024-11-01",
     title: "Career Transition",
     org: "Self-directed",
     type: "education",
@@ -34,6 +43,8 @@ export const TIMELINE = [
   {
     id: "hih7",
     period: "Nov 2024 — Present",
+    start: "2024-11-01",
+    end: null,
     title: "MERN Stack Developer",
     org: "Hih7 Webtech Pvt Ltd",
     type: "work",

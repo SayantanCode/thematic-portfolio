@@ -315,7 +315,7 @@ const SceneBackground = () => {
     >
       <ParticleField />
       <Suspense fallback={null}>
-        <JellyfishGlow />
+        {/* <JellyfishGlow /> */}
       </Suspense>
     </Canvas>
   );

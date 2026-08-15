@@ -12,7 +12,7 @@ import { scrollToSection } from "@/shared/hooks/useSectionScroll.js";
 import profilePhoto from "@/assets/images/me.jpg";
 
 const STATS = [
-  { label: "Years Experience", value: getYearsOfExperience(), icon: <Clock size={20} /> },
+  { label: "of Experience", value: getYearsOfExperience(), icon: <Clock size={20} /> },
   { label: "Public Repos", value: `${GITHUB_STATS.repoCount}+`, icon: <GitBranch size={20} /> },
   { label: "GitHub Stars", value: `${GITHUB_STATS.totalStars}`, icon: <Star size={20} /> },
   { label: "OSS Packages", value: `${GITHUB_STATS.npmPackages}`, icon: <Package size={20} /> },

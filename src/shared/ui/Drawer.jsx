@@ -13,7 +13,7 @@ export const Drawer = ({ open, onClose, title, className = "", children }) => {
   return (
     <DrawerPrimitive.Root open={open} onOpenChange={(next) => !next && onClose()}>
       <DrawerPrimitive.Portal>
-        <DrawerPrimitive.Overlay className="fixed inset-0 z-10000 bg-bg/95 backdrop-blur-md" />
+        <DrawerPrimitive.Overlay className="fixed inset-0 z-10000 bg-black/40 backdrop-blur-sm" />
         <DrawerPrimitive.Content
           className={cn(
             "fixed inset-x-0 bottom-0 z-10000 flex flex-col glass-card rounded-t-2xl border border-b-0 border-accent/20 shadow-[0_0_60px_var(--accent-glow)] max-h-[88vh] outline-none",

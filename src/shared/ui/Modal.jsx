@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Dialog } from "./Dialog.jsx";
 import { Drawer } from "./Drawer.jsx";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
+import { useLenisLock } from "@/shared/hooks/useLenisLock.js";
 
 /**
  * Reusable responsive modal — picks Dialog (centered, desktop) or Drawer
@@ -17,6 +18,27 @@ import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 export const Modal = ({ isOpen, onClose, title, children, className = "" }) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
   const Variant = isMobile ? Drawer : Dialog;
+
+  // Radix/vaul already own body-scroll locking; just stop Lenis on top of it.
+  useLenisLock(isOpen, { lockBody: false });
+
+  // With Lenis stopped, native hover-to-scroll only works while the cursor
+  // sits directly over .modal-scroll. Capture wheel anywhere on the page
+  // and redirect it there instead — same "scroll from anywhere" behavior
+  // ThemeSwitcher.jsx gives its own panel via a window-level listener.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleWheel = (e) => {
+      const scrollEl = document.querySelector(".modal-scroll");
+      if (!scrollEl) return;
+      e.preventDefault();
+      scrollEl.scrollTop += e.deltaY;
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, [isOpen]);
 
   return (
     <Variant open={isOpen} onClose={onClose} title={title} className={className}>

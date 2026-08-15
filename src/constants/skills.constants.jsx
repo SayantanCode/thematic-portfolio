@@ -28,7 +28,7 @@ export const SKILLS = [
   {
     name: "Express.js",
     description: "Web framework",
-    color: "#e8e8e8",
+    color: "var(--text)",
     icon: <SiExpress size={20} />,
   },
   {
@@ -58,7 +58,7 @@ export const SKILLS = [
   {
     name: "Socket.io",
     description: "Real-time engine",
-    color: "#e8e8e8",
+    color: "var(--text)",
     icon: <SiSocketdotio size={20} />,
   },
 ];
@@ -81,7 +81,7 @@ export const SKILL_CATEGORIES = [
     core: true,
     items: [
       { name: "Node.js", description: "Runtime", color: "#339933", icon: <SiNodedotjs size={30} /> },
-      { name: "Express.js", description: "Web Framework", color: "#e8e8e8", icon: <SiExpress size={30} /> },
+      { name: "Express.js", description: "Web Framework", color: "var(--text)", icon: <SiExpress size={30} /> },
     ],
   },
   {
@@ -91,7 +91,7 @@ export const SKILL_CATEGORIES = [
     items: [
       { name: "MongoDB", description: "Document DB · Mongoose ODM", color: "#47A248", icon: <SiMongodb size={26} /> },
       { name: "Redis", description: "Cache & Memory", color: "#DC382D", icon: <SiRedis size={26} /> },
-      { name: "Socket.io", description: "Real-time Comm", color: "#e8e8e8", icon: <SiSocketdotio size={26} /> },
+      { name: "Socket.io", description: "Real-time Comm", color: "var(--text)", icon: <SiSocketdotio size={26} /> },
       { name: "BullMQ", description: "Job Queues", color: "#fb923c", icon: <Workflow size={26} /> },
     ],
   },
@@ -101,10 +101,10 @@ export const SKILL_CATEGORIES = [
 // Vite/ESLint from this project's own package.json.
 export const TOOLS = [
   { name: "Git", color: "#F05032", icon: <SiGit size={20} /> },
-  { name: "GitHub", color: "#e8e8e8", icon: <SiGithub size={20} /> },
+  { name: "GitHub", color: "var(--text)", icon: <SiGithub size={20} /> },
   { name: "npm", color: "#CB3837", icon: <SiNpm size={20} /> },
   { name: "Vite", color: "#BD34FE", icon: <SiVite size={20} /> },
   { name: "ESLint", color: "#4B32C3", icon: <SiEslint size={20} /> },
   { name: "Postman", color: "#FF6C37", icon: <SiPostman size={20} /> },
-  { name: "JWT", color: "#e8e8e8", icon: <SiJsonwebtokens size={20} /> },
+  { name: "JWT", color: "var(--text)", icon: <SiJsonwebtokens size={20} /> },
 ];

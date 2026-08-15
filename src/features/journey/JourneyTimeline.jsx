@@ -56,6 +56,15 @@ const TimelineEntry = ({ entry, index, isLast }) => (
   </motion.div>
 );
 
+// Sorted by actual date, not array order — TIMELINE may later come from an
+// API/DB in whatever order that returns it in. Ongoing entries (end: null)
+// sort as most recent; ties fall back to start date.
+const timeValue = (iso) => (iso ? new Date(iso).getTime() : Infinity);
+const TIMELINE_DESC = [...TIMELINE].sort((a, b) => {
+  const endDiff = timeValue(b.end) - timeValue(a.end);
+  return endDiff !== 0 ? endDiff : timeValue(b.start) - timeValue(a.start);
+});
+
 export const JourneyTimeline = () => {
   return (
     <section id="journey" className="container mx-auto px-6 md:px-12 py-12 md:py-24 text-primary border-b border-glass-border">
@@ -65,12 +74,12 @@ export const JourneyTimeline = () => {
       />
 
       <div className="max-w-3xl mx-auto">
-        {TIMELINE.map((entry, i) => (
+        {TIMELINE_DESC.map((entry, i) => (
           <TimelineEntry
             key={entry.id}
             entry={entry}
             index={i}
-            isLast={i === TIMELINE.length - 1}
+            isLast={i === TIMELINE_DESC.length - 1}
           />
         ))}
       </div>

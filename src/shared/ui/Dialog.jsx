@@ -32,7 +32,7 @@ export const Dialog = ({ open, onClose, title, className = "", children }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-10000 bg-bg/95 backdrop-blur-md"
+                className="fixed inset-0 z-10000 bg-black/40 backdrop-blur-sm"
               />
             </DialogPrimitive.Overlay>
 
