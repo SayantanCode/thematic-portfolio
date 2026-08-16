@@ -36,9 +36,13 @@ export const TIMELINE = [
     type: "education",
     description:
       "Pivoted into software development — completed a BCA at Dr. D.Y. Patil Vidyapeeth, Pune (June 2024) and the MERN Stack Developer certification at WebSkitters Academy.",
-    tags: ["BCA · Dr. D.Y. Patil Vidyapeeth, Pune", "MERN Certification · WebSkitters Academy"],
-    credentialUrl:
-      "https://certificate.webskittersacademy.in/crtdls/sayantan-chakraborty-mern-stack-2-mern-stack-development-course/621-0/",
+    tags: [
+      "BCA · Dr. D.Y. Patil Vidyapeeth, Pune",
+      {
+        label: "MERN Certification · WebSkitters Academy",
+        url: "https://certificate.webskittersacademy.in/crtdls/sayantan-chakraborty-mern-stack-2-mern-stack-development-course/621-0/",
+      },
+    ],
   },
   {
     id: "hih7",

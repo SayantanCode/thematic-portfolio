@@ -8,8 +8,8 @@ import { ExternalLink } from "lucide-react";
  * driven by scroll — see JourneyTimeline).
  */
 export const JourneyCard = ({ entry, active, widthClassName = "w-48 sm:w-64" }) => {
-  const opacity = useTransform(active, [0, 1], [0.32, 1]);
-  const blurPx = useTransform(active, [0, 1], [5, 0]);
+  const opacity = useTransform(active, [0, 1], [0.25, 1]);
+  const blurPx = useTransform(active, [0, 1], [3, 0]);
   const saturatePct = useTransform(active, [0, 1], [15, 100]);
   const filter = useTransform(
     [blurPx, saturatePct],
@@ -73,54 +73,46 @@ export const JourneyCard = ({ entry, active, widthClassName = "w-48 sm:w-64" }) 
 
       {entry.tags?.length > 0 && (
         <div className="hidden sm:flex flex-wrap gap-1.5 mb-2">
-          {entry.tags.map((tag) => (
-            <span
-              key={tag}
-              className="
-                px-2
-                py-0.5
-                rounded-full
-                border
-                border-glass-border
-                bg-surface/50
-                text-accent/80
-                text-[9px]
-                font-mono
-              "
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
+          {entry.tags.map((tag) => {
+            const isLink = typeof tag === "object" && tag.url;
+            const label = isLink ? tag.label : tag;
 
-      {entry.credentialUrl && (
-        <a
-          href={entry.credentialUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="
-            interactive
-            hidden
-            sm:inline-flex
-            items-center
-            gap-1.5
-            text-primary
-            text-[10px]
-            font-mono
-            uppercase
-            tracking-widest
-            border-b
-            border-glass-border
-            pb-1
-            hover:text-accent
-            hover:border-accent
-            transition
-          "
-        >
-          View Credential
-          <ExternalLink size={10} />
-        </a>
+            const pillClassName = `
+              px-2
+              py-0.5
+              rounded-full
+              border
+              border-glass-border
+              bg-surface/50
+              text-accent/80
+              text-[9px]
+              font-mono
+            `;
+
+            if (isLink) {
+              return (
+                <a
+                  key={label}
+                  href={tag.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`View ${label} credential`}
+                  title={`View ${label} credential`}
+                  className={`interactive inline-flex items-center gap-1 hover:text-accent hover:border-accent transition ${pillClassName}`}
+                >
+                  {label}
+                  <ExternalLink size={9} />
+                </a>
+              );
+            }
+
+            return (
+              <span key={label} className={pillClassName}>
+                {label}
+              </span>
+            );
+          })}
+        </div>
       )}
     </motion.div>
   );

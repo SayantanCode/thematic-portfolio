@@ -2,9 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { KineticText } from '@/shared/components/text/KineticText.jsx';
 
-export const SectionHeader = ({ title, subtitle }) => {
+export const SectionHeader = ({ title, subtitle, compact = false }) => {
   return (
-    <div className="mb-12 md:mb-16">
+    <div className={compact ? "mb-6 md:mb-8" : "mb-12 md:mb-16"}>
       <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-header font-black text-wrap">
         <KineticText
           text={title}
@@ -22,7 +22,7 @@ export const SectionHeader = ({ title, subtitle }) => {
           whileInView={{ scaleX: 1 }}
           exit={{ scaleX: 0 }}
           transition={{ delay: 0.4, duration: 0.8, ease: "circOut" }}
-          className="block h-1 md:h-2 w-20 md:w-32 bg-accent mt-4 origin-left rounded-full shadow-[0_0_20px_var(--accent-glow)]"
+          className={`block h-1 md:h-2 w-20 md:w-32 bg-accent origin-left rounded-full shadow-[0_0_20px_var(--accent-glow)] ${compact ? "mt-2" : "mt-4"}`}
         />
       </h2>
 
@@ -32,7 +32,7 @@ export const SectionHeader = ({ title, subtitle }) => {
           whileInView={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ delay: 0.3 }}
-          className="mt-6 text-muted font-mono text-xs sm:text-sm md:text-base max-w-2xl border-l-2 border-accent/30 pl-4 md:pl-6 leading-relaxed italic"
+          className={`text-muted font-mono text-xs sm:text-sm md:text-base max-w-2xl border-l-2 border-accent/30 pl-4 md:pl-6 leading-relaxed italic ${compact ? "mt-3" : "mt-6"}`}
         >
           {subtitle}
         </motion.p>

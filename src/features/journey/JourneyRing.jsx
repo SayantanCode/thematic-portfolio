@@ -56,7 +56,7 @@ export const JourneyRing = ({ scrollYProgress }) => {
         stroke="var(--accent)"
         strokeWidth="0.45"
         strokeLinecap="round"
-        style={{ filter: "drop-shadow(0 0 4px var(--accent-glow))" }}
+        style={{ filter: "drop-shadow(0 0 6px var(--accent-glow))" }}
       />
     </svg>
   );

@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 
 import { SectionHeader } from "@/shared/components/SectionHeader.jsx";
+import { useAccentColor } from "@/shared/hooks/useAccentColor.js";
 import { TIMELINE } from "@/constants/timeline.constants.js";
 
 import Earth from "./Earth.jsx";
@@ -42,7 +43,7 @@ const JourneyStageNode = ({ entry, index, count, scrollYProgress }) => {
 
   const angle = ringNodeAngle(index, count);
   const iconPos = pointAt(angle);
-  const textPos = pointAt(angle, 68, 46);
+  const textPos = pointAt(angle, 68, 32);
   const isLeft = textPos.x < 50;
 
   return (
@@ -85,6 +86,7 @@ const JourneyMobileRow = ({ entry, index, count, scrollYProgress }) => {
 export const JourneyTimeline = () => {
   const sectionRef = useRef(null);
   const progressRef = useRef(0);
+  const accent = useAccentColor();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -136,11 +138,12 @@ export const JourneyTimeline = () => {
             mx-auto
             px-6
             md:px-12
-            pt-24
-            lg:pt-16
+            pt-16
+            lg:pt-10
           "
         >
           <SectionHeader
+            compact
             title="My Journey"
             subtitle="From the classroom to backend architecture — the real timeline."
           />
@@ -168,10 +171,10 @@ export const JourneyTimeline = () => {
                   <pointLight
                     position={[-5, -2, -3]}
                     intensity={0.5}
-                    color="#5ec8ff"
+                    color={accent}
                   />
 
-                  <Earth progressRef={progressRef} />
+                  <Earth progressRef={progressRef} accentColor={accent} />
                 </Canvas>
               </div>
 

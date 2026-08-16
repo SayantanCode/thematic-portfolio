@@ -3,9 +3,9 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 
-const EARTH_RADIUS = 2;
+const EARTH_RADIUS = 1.75;
 
-export default function Earth({ progressRef }) {
+export default function Earth({ progressRef, accentColor = "#5ec8ff" }) {
   const [dayMap, lightsMap, cloudsMap] = useTexture([
     "/textures/earth_daymap.jpg",
     "/textures/earth_lights.png",
@@ -54,13 +54,14 @@ export default function Earth({ progressRef }) {
         />
       </mesh>
 
-      {/* Faint atmosphere rim */}
+      {/* Faint atmosphere rim — tinted to the active theme's accent so the
+          globe reads as part of the same palette instead of a fixed blue. */}
       <mesh scale={1.04}>
         <sphereGeometry args={[EARTH_RADIUS, 64, 64]} />
         <meshBasicMaterial
-          color="#5ec8ff"
+          color={accentColor}
           transparent
-          opacity={0.08}
+          opacity={0.12}
           side={THREE.BackSide}
         />
       </mesh>
