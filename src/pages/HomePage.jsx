@@ -32,7 +32,7 @@ export const HomePage = () => (
     <ScrollDissolve>
       <GitHubFootprint />
     </ScrollDissolve>
-    <ScrollFade>
+    <ScrollFade isLast>
       <Footer />
     </ScrollFade>
   </>

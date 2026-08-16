@@ -25,6 +25,15 @@ const CONTAINER_VH = 100 + PIN_VH;
 // fraction of it spent in that "still entering, not yet pinned" phase.
 const ENTER_FRACTION = 100 / CONTAINER_VH;
 
+// Below lg (Tailwind's 1024px breakpoint — matches the fixed bottom tab bar's
+// own `lg:hidden`), that bar covers the last ~80px (64px bar + 16px margin)
+// of the viewport. Pinned content here centers against the *true* 100vh via
+// `h-screen`, with no awareness that the bar is sitting on top of the bottom
+// of it — so on mobile it needs to fit and center within (100vh - 80px)
+// instead, or its bottom edge renders straight under the bar.
+const MOBILE_BAR_CLEARANCE = 80;
+const MOBILE_BREAKPOINT = 1024;
+
 /**
  * Pins a section in place — position:sticky, so it never translates on the
  * Y axis — for a fixed scroll distance, and drives scale/opacity/blur
@@ -55,8 +64,9 @@ export const ScrollDissolve = ({ children, className = "", isFirst = false, isLa
     const measure = () => {
       if (!contentRef.current) return;
       const naturalHeight = contentRef.current.scrollHeight;
-      const viewportH = window.innerHeight;
-      setFitScale(Math.min(1, (viewportH * 0.94) / naturalHeight));
+      const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+      const availableH = window.innerHeight - (isMobile ? MOBILE_BAR_CLEARANCE : 0);
+      setFitScale(Math.min(1, (availableH * 0.94) / naturalHeight));
     };
     measure();
     window.addEventListener("resize", measure);
@@ -113,7 +123,7 @@ export const ScrollDissolve = ({ children, className = "", isFirst = false, isLa
       data-scroll-settle-vh={settleVh}
       style={{ height: `${CONTAINER_VH}vh` }}
     >
-      <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
+      <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center pb-20 lg:pb-0">
         <motion.div
           ref={contentRef}
           style={{ scale, opacity, filter: blurFilter, willChange: "transform, opacity, filter" }}

@@ -28,8 +28,15 @@ import { motion, useScroll, useTransform } from "framer-motion";
  * immediately regardless of scroll position), so the wires would get baked
  * in at the wrong size and never catch up as the section scales back to
  * full size. Blur and opacity don't affect layout geometry, so they're safe.
+ *
+ * `isLast` mirrors ScrollDissolve's own isLast: progress only reaches 1 once
+ * this section's *bottom* edge reaches the viewport top, which needs more
+ * scroll room below it than a page actually has once nothing follows it —
+ * the browser hits max scroll first, permanently stranding the last section
+ * mid-blur-out instead of ever reaching the sharp hold. Skip that exit fade
+ * entirely for whichever section is genuinely last on the page.
  */
-export const ScrollFade = ({ children, className = "" }) => {
+export const ScrollFade = ({ children, className = "", isLast = false }) => {
   const ref = useRef(null);
   const [stopTimes, setStopTimes] = useState([0, 0.25, 0.75, 1]);
 
@@ -61,8 +68,8 @@ export const ScrollFade = ({ children, className = "" }) => {
     offset: ["start end", "end start"],
   });
 
-  const opacity = useTransform(scrollYProgress, stopTimes, [0, 1, 1, 0]);
-  const blur = useTransform(scrollYProgress, stopTimes, [10, 0, 0, 10]);
+  const opacity = useTransform(scrollYProgress, stopTimes, [0, 1, 1, isLast ? 1 : 0]);
+  const blur = useTransform(scrollYProgress, stopTimes, [10, 0, 0, isLast ? 0 : 10]);
   const filter = useTransform(blur, (b) => `blur(${b.toFixed(1)}px)`);
 
   return (

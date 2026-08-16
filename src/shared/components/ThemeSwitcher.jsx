@@ -178,7 +178,7 @@ export const ThemeSwitcher = () => {
         )}
       </AnimatePresence>
 
-      <div ref={rootRef} className="fixed top-20 right-4 lg:top-6 lg:right-6 z-[9999] pointer-events-auto">
+      <div ref={rootRef} className="fixed top-4 right-4 lg:top-6 lg:right-6 z-[9999] pointer-events-auto">
         <motion.button
           onClick={panel.toggle}
           whileHover={{ scale: 1.1 }}

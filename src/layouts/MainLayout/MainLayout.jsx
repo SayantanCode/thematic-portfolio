@@ -71,7 +71,10 @@ export const MainLayout = () => {
         )}
       </AnimatePresence>
 
-      <main className="relative z-10 lg:pl-20">
+      {/* pb-24 clears the fixed mobile bottom tab bar (~64px bar + 16px
+          margin + breathing room) so it never overlaps page content —
+          Footer especially, since nothing follows it to push it clear. */}
+      <main className="relative z-10 pb-24 lg:pb-0 lg:pl-20">
         <Outlet />
       </main>
     </div>

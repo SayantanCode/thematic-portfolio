@@ -79,7 +79,7 @@ export const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden px-6 lg:px-12 pt-20 lg:pt-0"
+      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden px-6 lg:px-12"
     >
       <div className="container mx-auto grid gap-12 items-center lg:grid-cols-2 text-center lg:text-left">
         {/* LEFT CONTENT */}
