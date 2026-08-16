@@ -10,6 +10,12 @@ import { useEffect, useRef } from 'react';
  * App.jsx) — so it always paints behind text/cards instead of over them.
  * Combined with pointerEvents:none below, it's purely decorative: it never
  * blocks a click and never sits visually on top of anything readable.
+ *
+ * `enableTouch` gates touch input (mouse is always on) so a caller can flip
+ * it per device/condition — e.g. off on low-end phones — without editing
+ * this file. The touch listeners themselves stay attached the whole time;
+ * only the ref they check changes, so toggling it doesn't tear down and
+ * rebuild the WebGL sim.
  */
 function SplashCursor({
   SIM_RESOLUTION = 128,
@@ -28,10 +34,16 @@ function SplashCursor({
   TRANSPARENT = true,
   RAINBOW_MODE = true,
   COLOR = '#ff0000',
-  CLICK_INTENSITY = 3
+  CLICK_INTENSITY = 3,
+  enableTouch = true
 }) {
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
+  const enableTouchRef = useRef(enableTouch);
+
+  useEffect(() => {
+    enableTouchRef.current = enableTouch;
+  }, [enableTouch]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -1011,6 +1023,7 @@ function SplashCursor({
     }
 
     function handleTouchStart(e) {
+      if (!enableTouchRef.current) return;
       const touches = e.targetTouches;
       let pointer = pointers[0];
       for (let i = 0; i < touches.length; i++) {
@@ -1021,6 +1034,7 @@ function SplashCursor({
     }
 
     function handleTouchMove(e) {
+      if (!enableTouchRef.current) return;
       const touches = e.targetTouches;
       let pointer = pointers[0];
       for (let i = 0; i < touches.length; i++) {
@@ -1041,7 +1055,7 @@ function SplashCursor({
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleMouseMove, false);
+    window.addEventListener('touchmove', handleTouchMove, false);
     window.addEventListener('touchend', handleTouchEnd);
 
     updateFrame();

@@ -9,6 +9,7 @@ import {
   ZoomIn,
   MapPin,
   BriefcaseBusiness,
+  Building2,
   CalendarDays,
   ExternalLink,
   UserRound,
@@ -66,9 +67,19 @@ const DETAIL_ROWS = [
     icon: <BriefcaseBusiness size={14} />,
   },
   {
+    label: "Company",
+    value: "Hi7 Webtech Pvt Ltd",
+    icon: <Building2 size={14} />,
+  },
+  {
     label: "Location",
     value: "Kolkata, West Bengal, India",
     icon: <MapPin size={14} />,
+  },
+  {
+    label: "Since",
+    value: "Nov 2024 — Present",
+    icon: <CalendarDays size={14} />,
   },
 ];
 

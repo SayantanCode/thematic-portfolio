@@ -28,7 +28,10 @@ export const MainLayout = () => {
       <ThemeSwitcher />
       <LiquidCursor />
       <InteractiveBackground />
-      <SplashCursor />
+      {/* enableTouch off for now while testing on touch devices — flip
+          back on (or make it conditional) here later without touching
+          SplashCursor.jsx itself. */}
+      <SplashCursor enableTouch={false} />
       <Sidebar />
 
       <AnimatePresence>

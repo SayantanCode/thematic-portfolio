@@ -19,8 +19,12 @@ export const Modal = ({ isOpen, onClose, title, children, className = "" }) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
   const Variant = isMobile ? Drawer : Dialog;
 
-  // Radix/vaul already own body-scroll locking; just stop Lenis on top of it.
-  useLenisLock(isOpen, { lockBody: false });
+  // Radix/vaul own their own scroll-event locking (wheel/touch/key), but
+  // neither stops a scrollbar-thumb drag — that fires a native `scroll`
+  // event with nothing cancelable to intercept, so the only real fix is
+  // removing the scrollbar itself. useLenisLock's html+body overflow lock
+  // does that; let it run here instead of relying on Radix/vaul alone.
+  useLenisLock(isOpen);
 
   // With Lenis stopped, native hover-to-scroll only works while the cursor
   // sits directly over .modal-scroll. Capture wheel anywhere on the page

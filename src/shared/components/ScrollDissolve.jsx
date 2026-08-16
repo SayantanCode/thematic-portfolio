@@ -8,8 +8,22 @@ import { motion, useScroll, useTransform } from "framer-motion";
 // depth curve finishes (and the section fades out) long before the sticky
 // pin actually releases, leaving a blank gap before the next section's own
 // pin begins.
-const PIN_VH = 50;
+const PIN_VH = 30;
 const CONTAINER_VH = 100 + PIN_VH;
+
+// With offset ["start start", "end end"], scrollYProgress only spans the
+// PIN_VH pin range — but the section's own box is a full CONTAINER_VH
+// (100 + PIN_VH) tall, so after progress hits 1 there's still 100vh of dead
+// box left to scroll through before the *next* section's box even begins,
+// and that next section sits frozen at progress 0 (invisible) the whole
+// time it's scrolling up from below, since its own progress hasn't started
+// yet either. Two invisible sections back to back = a ~100vh dead zone.
+// offset ["start end", "end end"] instead starts progress the moment the
+// section's top enters the viewport from the bottom, so non-first sections
+// fade in *while* scrolling into place instead of sitting invisible through
+// it. Under that offset the full CONTAINER_VH is in play, so this is the
+// fraction of it spent in that "still entering, not yet pinned" phase.
+const ENTER_FRACTION = 100 / CONTAINER_VH;
 
 /**
  * Pins a section in place — position:sticky, so it never translates on the
@@ -54,19 +68,28 @@ export const ScrollDissolve = ({ children, className = "", isFirst = false, isLa
     };
   }, []);
 
+  // Hero (isFirst) is already fully on screen at load — there's nothing
+  // below the fold for it to scroll up *from*, so it keeps the old offset
+  // (progress starts right as its own pin engages). Every other section
+  // uses the wider offset so its fade-in plays out during the scroll that
+  // brings it into view, instead of after — see ENTER_FRACTION above.
   const { scrollYProgress } = useScroll({
     target: outerRef,
-    offset: ["start start", "end end"],
+    offset: isFirst ? ["start start", "end end"] : ["start end", "end end"],
   });
 
   const scaleStops = isFirst ? [1, 1, 1, 1.3] : [0.55, 1, 1, isLast ? 1 : 1.3];
   const opacityStops = isFirst ? [1, 1, 1, isLast ? 1 : 0] : [0, 1, 1, isLast ? 1 : 0];
   const blurStops = isFirst ? [0, 0, 0, isLast ? 0 : 14] : [16, 0, 0, isLast ? 0 : 14];
-  // Fade-in/out windows kept tight (vs. the old 0.28) so sections snap into
-  // focus within ~24vh of scroll instead of ~56vh — scrolling should read as
-  // visible change almost immediately, not a long blurry dead zone before
-  // anything sharpens up.
-  const stopTimes = [0, 0.12, 0.88, 1];
+  // For isFirst, stops 0-2 are identical anyway (nothing to approach from),
+  // so these three fractions only matter for where the pass-by starts.
+  // For everyone else, the entering-from-below phase (0 → ENTER_FRACTION)
+  // now carries the full fade-in, arriving fully sharp exactly when the
+  // section's natural top reaches the viewport top (matching where the
+  // sticky pin itself engages) — then a short hold, then pass-by.
+  const stopTimes = isFirst
+    ? [0, 0.15, 0.45, 1]
+    : [0, ENTER_FRACTION, ENTER_FRACTION + (0.3 * PIN_VH) / CONTAINER_VH, 1];
 
   const depthScale = useTransform(scrollYProgress, stopTimes, scaleStops);
   const opacity = useTransform(scrollYProgress, stopTimes, opacityStops);
@@ -77,8 +100,11 @@ export const ScrollDissolve = ({ children, className = "", isFirst = false, isLa
   // How far past this element's natural top the depth curve actually
   // settles to full focus — nav clicks (scrollToSection) read this back so
   // clicking "About" etc. lands on the sharp, settled frame instead of the
-  // still-fading-in start of the pin range.
-  const settleVh = isFirst ? 0 : PIN_VH * 0.12;
+  // still-fading-in start of the pin range. Always 0 now: isFirst is
+  // settled from progress 0, and everyone else's hold begins exactly at
+  // ENTER_FRACTION, which by construction lands at scrollY === this
+  // element's own natural top.
+  const settleVh = 0;
 
   return (
     <div
