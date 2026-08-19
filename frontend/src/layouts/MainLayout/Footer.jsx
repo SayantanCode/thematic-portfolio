@@ -1,0 +1,190 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Github, Linkedin, Mail, MapPin, ChevronUp } from 'lucide-react';
+import { KineticText } from '@/shared/components/text/KineticText.jsx';
+import { ParticleTypography } from '@/shared/components/text/ParticleTypography.jsx';
+import { FlipWords } from '@/shared/components/text/FlipWords.jsx';
+import { usePrefersReducedMotionOrLowPower } from '@/shared/hooks/usePrefersReducedMotionOrLowPower';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
+import { useSiteContent } from '@/shared/hooks/useSiteContent.js';
+import { scrollToSection } from '@/shared/hooks/useSectionScroll.js';
+import { Button } from '@/shared/ui/Button.jsx';
+import { FOOTER_DEFAULTS } from '@/constants/siteContent.defaults.js';
+
+// Icons/labels/order are fixed layout — only the URLs are admin-editable.
+const getSocials = (content) => [
+  { Icon: Github, href: content.githubUrl, label: "GitHub" },
+  { Icon: Linkedin, href: content.linkedinUrl, label: "LinkedIn" },
+  { Icon: Mail, href: `mailto:${content.email}`, label: "Email" },
+];
+
+const FLIP_WORDS = ["SCALABLE", "RELIABLE", "SECURE", "REAL-TIME"];
+
+const QUICK_LINKS = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About Me" },
+  { id: "skills", label: "Skills" },
+  { id: "projects", label: "Projects" },
+  { id: "journey", label: "Journey" },
+];
+
+export const Footer = () => {
+  const content = useSiteContent('footer', FOOTER_DEFAULTS);
+  const socials = getSocials(content);
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const reduceMotion = usePrefersReducedMotionOrLowPower();
+  const isNarrowViewport = useMediaQuery('(max-width: 639px)');
+  const useParticles = !reduceMotion;
+
+  return (
+    <footer id="contact" className="relative pt-24 pb-8 overflow-hidden border-t border-glass-border">
+      <div className="container mx-auto px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="mb-16"
+        >
+          {/* text-primary for theme-aware heading */}
+          {!useParticles ? (
+            <h2 className="text-4xl md:text-6xl font-header font-black text-primary mb-6 uppercase tracking-tighter">
+              <KineticText as="span" text="Let's build" trigger="inView" once={false} />
+              <br />
+              <KineticText as="span" text="something" trigger="inView" once={false} delay={0.25} />{" "}
+              <FlipWords
+                words={FLIP_WORDS}
+                disabled={reduceMotion}
+                className="text-accent drop-shadow-[0_0_10px_var(--accent-glow)]"
+              />
+            </h2>
+          ) : (
+            <div className="mb-6 -mx-6">
+              <ParticleTypography
+                text="LET'S BUILD"
+                colorVar="--text"
+                fontSize={isNarrowViewport ? 44 : 90}
+                height={isNarrowViewport ? 64 : 110}
+                particleSize={isNarrowViewport ? 1.2 : 1.6}
+                particleDensity={isNarrowViewport ? 3 : 4}
+              />
+              <ParticleTypography
+                text="SOMETHING"
+                colorVar="--accent"
+                fontSize={isNarrowViewport ? 34 : 64}
+                height={isNarrowViewport ? 52 : 100}
+                particleSize={isNarrowViewport ? 1.1 : 1.6}
+                particleDensity={isNarrowViewport ? 3 : 4}
+                glowBlur={isNarrowViewport ? 4 : 12}
+                glow
+              />
+              <div className={`flex justify-center font-header font-black uppercase tracking-tighter text-accent text-4xl sm:text-5xl md:text-[64px] drop-shadow-[0_0_20px_var(--accent-glow)] ${isNarrowViewport ? 'mt-1' : '-mt-4'}`}>
+                <FlipWords words={FLIP_WORDS} disabled={reduceMotion} />
+              </div>
+            </div>
+          )}
+
+          <p className="text-muted mb-8 font-mono text-sm max-w-md mx-auto">
+            {content.availability}
+          </p>
+
+          <Button
+            as="a"
+            href={`mailto:${content.email}`}
+            icon={<Mail size={20} />}
+            className="px-10 py-5 text-lg"
+          >
+            Hire Me
+          </Button>
+        </motion.div>
+
+        {/* 4-column info grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 text-left mb-16 pt-12 border-t border-glass-border">
+          <div>
+            <h3 className="font-header font-black text-primary text-lg mb-2">
+              {content.name}
+            </h3>
+            <p className="text-muted text-sm leading-relaxed">
+              {content.blurb}
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-widest text-accent mb-4">
+              Quick Links
+            </h4>
+            <ul className="space-y-2">
+              {QUICK_LINKS.map((link) => (
+                <li key={link.id}>
+                  <button
+                    onClick={() => scrollToSection(link.id)}
+                    className="interactive text-muted hover:text-accent text-sm transition-colors"
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-widest text-accent mb-4">
+              Connect With Me
+            </h4>
+            <ul className="space-y-2 text-muted text-sm">
+              <li className="flex items-center gap-2">
+                <Mail size={14} className="text-accent shrink-0" />
+                <a href={`mailto:${content.email}`} className="interactive hover:text-accent transition-colors">
+                  {content.email}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin size={14} className="text-accent shrink-0" />
+                {content.location}
+              </li>
+              <li className="flex items-center gap-2">
+                <Github size={14} className="text-accent shrink-0" />
+                <a href={content.githubUrl} target="_blank" rel="noreferrer" className="interactive hover:text-accent transition-colors">
+                  {content.githubUrl.replace(/^https?:\/\//, "")}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-widest text-accent mb-4">
+              Follow Me
+            </h4>
+            <div className="flex gap-4">
+              {socials.map(({ Icon, href, label }, i) => (
+                <motion.a
+                  key={i}
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel={href.startsWith("http") ? "noreferrer" : undefined}
+                  aria-label={label}
+                  whileHover={{ y: -4 }}
+                  className="w-10 h-10 rounded-lg bg-surface/50 border border-glass-border flex items-center justify-center text-muted hover:text-accent hover:border-accent/30 transition-colors duration-300"
+                >
+                  <Icon size={18} />
+                </motion.a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-glass-border flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="font-mono text-[10px] text-muted uppercase tracking-widest">
+            &copy; {new Date().getFullYear()} {content.name} — Built with precision
+          </p>
+
+          <button
+            onClick={scrollToTop}
+            className="p-3 border border-glass-border rounded-full text-muted hover:text-accent hover:border-accent transition-all shadow-sm"
+          >
+            <ChevronUp size={20} />
+          </button>
+        </div>
+      </div>
+    </footer>
+  );
+};
